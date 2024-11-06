@@ -1,3 +1,5 @@
+"""Draw the plain sram graph."""
+
 from pathlib import Path
 import networkx as nx
 
@@ -11,8 +13,6 @@ from utils import (
 # Configuration file
 PATH = Path.absolute(Path(__file__)).parent
 config_path = PATH.parent / "configs" / "graph_config.toml"
-print(PATH)
-print(config_path)
 graph_config = read_graph_config(config_path)
 
 graph = nx.MultiDiGraph()
@@ -20,7 +20,7 @@ graph = nx.MultiDiGraph()
 add_graph_edges_from_config(graph, graph_config, "plain_graph")
 
 # color nodes according to their type
-color_nodes(graph, graph_config)
+color_nodes(graph, graph_config, **{"default": "green"})
 
 # render html
 html_path = PATH.parent / "html" / "plain_graph.html"
