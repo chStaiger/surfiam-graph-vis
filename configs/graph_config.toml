@@ -1,0 +1,25 @@
+meta = ["type", "doc"]
+edge_types = ["action", "trust"]
+
+[nodes]
+ORG_ADMIN.type = "role"
+ORG_MANAGER.type = "role"
+UNIT_MANAGER.type = "role"
+COLLABORATION_ADMIN.type = "role"
+RESEARCHER.type = "user"
+CO_MEMBER.type = "role"
+
+IDP.type = "entity"
+IDP.doc = "embedded"
+APPLICATION.type = "entity"
+COLLABORATION.type = "entity"
+ORGANISATION.type = "entity"
+UNIT.type = "entity"
+CO_GROUP.type = "entity"
+APP_GROUP.type = "entity"
+
+[plain_graph]
+COLLABORATION.members = ["RESEARCHER_1", "RESEARCHER_2", "COLLABORATION_ADMIN"]
+edges.entities = [["SURF", "ORGANISATION"], ["ORGANISATION", "COLLABORATION"]]
+edges.entity_role = [["ORGANISATION", "ORG_ADMIN"], ["ORGANISATION", "ORG_MANAGER"]]
+edges.actions = [["ORG_MANAGER", "COLLABORATION", "creates"], ["COLLABORATION_ADMIN", "RESEARCHER_1", "invites"], ["COLLABORATION_ADMIN", "RESEARCHER_2", "invites"]]
