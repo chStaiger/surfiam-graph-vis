@@ -1,7 +1,7 @@
 meta = ["type", "doc"]
 edge_types = ["action", "trust"]
 
-[nodes]
+[nodes_types]
 ORG_ADMIN.type = "role"
 ORG_MANAGER.type = "role"
 UNIT_MANAGER.type = "role"
@@ -11,12 +11,12 @@ CO_MEMBER.type = "role"
 
 IDP.type = "entity"
 IDP.doc = "embedded"
-APPLICATION.type = "entity"
+APPLICATION.type = "service"
 COLLABORATION.type = "entity"
 ORGANISATION.type = "entity"
 UNIT.type = "entity"
-CO_GROUP.type = "entity"
-APP_GROUP.type = "entity"
+CO_GROUP.type = "group"
+APP_GROUP.type = "group"
 
 [plain_graph]
 COLLABORATION.members = ["RESEARCHER_1", "RESEARCHER_2", "COLLABORATION_ADMIN"]
