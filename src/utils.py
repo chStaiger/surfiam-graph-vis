@@ -6,14 +6,26 @@ from pathlib import Path
 import networkx as nx
 from pyvis.network import Network
 
+
 def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
     """Save the graph as html file."""
-    nt = Network(height="500", width="90%", directed=True)
+
+    nt = Network(height="750", width="90%", directed=True)
+    # nt.show_buttons()
     # options for an editable graph
     nt.set_options("""
         const options = {
             "manipulation": {"enabled": true},
-            "interaction": {"navigationButtons": true}
+            "interaction": {"navigationButtons": true},
+            "physics": {"enabled": false, "minVelocity": 0.75},
+            "edges": {"smooth": false},
+            "layout": {
+                "hierarchical": {
+                    "enabled": true,
+                    "direction": "LR",
+                    "sortMethod": "directed"
+                }
+            }
     }""")
     nt.from_nx(graph)
     print("Rendering:")
@@ -39,19 +51,37 @@ def color_nodes(
     """Color nodes according to their type in the config file."""
     default = kwargs.get("default", "lightblue")
     for node in graph.nodes():
-        if node in graph_config["nodes"]:
-            has_type = "type" in graph_config["nodes"][node]
-            if has_type:
-                if graph_config["nodes"][node]["type"] == "role":
-                    graph.add_node(node, color=role)
-                elif graph_config["nodes"][node]["type"] == "entity":
-                    graph.add_node(node, color=entity)
-                elif graph_config["nodes"][node]["type"] in kwargs:
-                    graph.add_node(node, color=kwargs[graph_config["nodes"][node]["type"]])
-                else:
-                    graph.add_node(node, color=default)
+        if "node_type" in graph.nodes.get(node):
+            node_type = graph.nodes.get(node)["node_type"]
+        elif node in graph_config["nodes_types"]:
+            node_type = graph_config["nodes_types"][node].get("type", "default")
+        else:
+            node_type = "default"
+        if node_type == "role":
+            graph.add_node(node, color=role)
+        elif node_type == "entity":
+            graph.add_node(node, color=entity)
+        elif node_type in kwargs:
+            graph.add_node(node, color=kwargs[node_type])
         else:
             graph.add_node(node, color=default)
+
+
+def set_node_levels_from_config(graph: nx.MultiDiGraph, graph_config: dict):
+    """Set the level of the node in the graph hierarchy.
+    Only used for graphs from the config file.
+    """
+    for node in graph.nodes():
+        if "level" not in graph.nodes.get(node):
+            if node.startswith("RESEARCHER"):
+                lvl = graph_config["nodes_types"]["RESEARCHER"]["level"]
+                graph.add_node(node, level=lvl)
+            elif "level" not in graph_config["nodes_types"][node]:
+                print(f"Cannot render graph, set {node}.level in config.")
+            else:
+                lvl = graph_config["nodes_types"][node]["level"]
+                graph.add_node(node, level=lvl)
+
 
 def add_graph_edges_from_config(
     graph: nx.MultiDiGraph, graph_config: dict, section: str
