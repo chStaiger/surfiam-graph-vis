@@ -33,7 +33,7 @@
 
              #mynetwork {
                  width: 90%;
-                 height: 500;
+                 height: 750;
                  background-color: #ffffff;
                  border: 1px solid lightgray;
                  position: relative;
@@ -100,7 +100,7 @@
                   // adding nodes and edges to the graph
                   data = {nodes: nodes, edges: edges};
 
-                  var options = {"manipulation": {"enabled": true}, "interaction": {"navigationButtons": true}, "physics": {"enabled": false, "minVelocity": 0.75}, "edges": {"smooth": false}};
+                  var options = {"manipulation": {"enabled": true}, "interaction": {"navigationButtons": true}, "physics": {"enabled": false, "minVelocity": 0.75}, "edges": {"smooth": false}, "layout": {"hierarchical": {"enabled": true, "direction": "LR", "sortMethod": "directed"}}};
 
                   
 

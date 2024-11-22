@@ -5,19 +5,28 @@ import os
 from pathlib import Path
 import networkx as nx
 from pyvis.network import Network
-
+from networkx.drawing.nx_pydot import graphviz_layout
 
 def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
     """Save the graph as html file."""
-    nt = Network(height="500", width="90%", directed=True)
-    # nt.show_buttons()
+    pos = graphviz_layout(graph, prog='dot')
+
+    nt = Network(height="750", width="90%", directed=True)
+    #nt.show_buttons()
     # options for an editable graph
     nt.set_options("""
         const options = {
             "manipulation": {"enabled": true},
             "interaction": {"navigationButtons": true},
             "physics": {"enabled": false, "minVelocity": 0.75},
-            "edges": {"smooth": false}
+            "edges": {"smooth": false},
+            "layout": {
+                "hierarchical": {
+                    "enabled": true,
+                    "direction": "LR",
+                    "sortMethod": "directed"
+                }
+            }
     }""")
     nt.from_nx(graph)
     print("Rendering:")
@@ -69,3 +78,5 @@ def add_graph_edges_from_config(
         graph.add_edge("COLLABORATION", member, color="black")
     for n1, n2, label in graph_config[section]["edges"]["actions"]:
         graph.add_edge(n1, n2, label=label, color="orange")
+
+
