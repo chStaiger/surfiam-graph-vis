@@ -1,9 +1,9 @@
 """Generate a graph from an SRAM export."""
+
 import json
 from pathlib import Path
 from typing import Union
 import networkx as nx
-from networkx.drawing.nx_agraph import graphviz_layout
 
 def read_json(fpath: Union[str, Path]) -> dict:
     """Read sram json export."""
@@ -59,12 +59,14 @@ def nodes_to_graph(nodes_sets: list) -> nx.MultiGraph:
     """Add nodes and their adges to the graph."""
     graph = nx.MultiDiGraph()
     graph.add_node(
-        nodes_sets[0]["node_name"], label=nodes_sets[0]["label"],
-        node_type="entity", x=0, y=0
+        nodes_sets[0]["node_name"],
+        label=nodes_sets[0]["label"],
+        node_type="entity",
+        x=0,
+        y=0,
     )
     add_units(graph, nodes_sets[1], nodes_sets[0]["node_name"])
     add_collaborations(graph, nodes_sets[2], nodes_sets[0]["node_name"])
-    pos=graphviz_layout(graph, prog='dot')
     return graph
 
 

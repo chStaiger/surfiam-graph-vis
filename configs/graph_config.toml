@@ -3,23 +3,33 @@ edge_types = ["action", "trust"]
 
 [nodes_types]
 ORG_ADMIN.type = "role"
+ORG_ADMIN.level = 1
 ORG_MANAGER.type = "role"
+ORG_MANAGER.level = 1
 UNIT_MANAGER.type = "role"
+UNIT_MANAGER.level = 3
 COLLABORATION_ADMIN.type = "role"
+COLLABORATION_ADMIN.level = 5
 RESEARCHER.type = "user"
+RESEARCHER.level = 7
 CO_MEMBER.type = "role"
+CO_MEMBER.level = 7
 
-IDP.type = "entity"
-IDP.doc = "embedded"
 APPLICATION.type = "service"
+APPLICATION.level = 8
 COLLABORATION.type = "entity"
+COLLABORATION.level = 4
 ORGANISATION.type = "entity"
+ORGANISATION.level = 0
 UNIT.type = "entity"
+UNIT.level = 2
 CO_GROUP.type = "group"
+CO_GROUP.level = 6
 APP_GROUP.type = "group"
+APP_GROUP.level = 6
 
 [plain_graph]
 COLLABORATION.members = ["RESEARCHER_1", "RESEARCHER_2", "COLLABORATION_ADMIN"]
-edges.entities = [["SURF", "ORGANISATION"], ["ORGANISATION", "COLLABORATION"]]
+edges.entities = [["ORGANISATION", "COLLABORATION"]]
 edges.entity_role = [["ORGANISATION", "ORG_ADMIN"], ["ORGANISATION", "ORG_MANAGER"]]
 edges.actions = [["ORG_MANAGER", "COLLABORATION", "creates"], ["COLLABORATION_ADMIN", "RESEARCHER_1", "invites"], ["COLLABORATION_ADMIN", "RESEARCHER_2", "invites"]]

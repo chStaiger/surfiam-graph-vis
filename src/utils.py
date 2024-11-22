@@ -5,14 +5,13 @@ import os
 from pathlib import Path
 import networkx as nx
 from pyvis.network import Network
-from networkx.drawing.nx_pydot import graphviz_layout
+
 
 def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
     """Save the graph as html file."""
-    pos = graphviz_layout(graph, prog='dot')
 
     nt = Network(height="750", width="90%", directed=True)
-    #nt.show_buttons()
+    # nt.show_buttons()
     # options for an editable graph
     nt.set_options("""
         const options = {
@@ -68,6 +67,22 @@ def color_nodes(
             graph.add_node(node, color=default)
 
 
+def set_node_levels_from_config(graph: nx.MultiDiGraph, graph_config: dict):
+    """Set the level of the node in the graph hierarchy.
+    Only used for graphs from the config file.
+    """
+    for node in graph.nodes():
+        if "level" not in graph.nodes.get(node):
+            if node.startswith("RESEARCHER"):
+                lvl = graph_config["nodes_types"]["RESEARCHER"]["level"]
+                graph.add_node(node, level=lvl)
+            elif "level" not in graph_config["nodes_types"][node]:
+                print(f"Cannot render graph, set {node}.level in config.")
+            else:
+                lvl = graph_config["nodes_types"][node]["level"]
+                graph.add_node(node, level=lvl)
+
+
 def add_graph_edges_from_config(
     graph: nx.MultiDiGraph, graph_config: dict, section: str
 ):
@@ -78,5 +93,3 @@ def add_graph_edges_from_config(
         graph.add_edge("COLLABORATION", member, color="black")
     for n1, n2, label in graph_config[section]["edges"]["actions"]:
         graph.add_edge(n1, n2, label=label, color="orange")
-
-
