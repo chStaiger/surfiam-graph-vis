@@ -9,40 +9,50 @@ from utils import (
     render_editable_network,
     add_graph_edges_from_config,
     set_node_levels_from_config,
+    set_node_type,
 )
 
 from graph_from_sram_json import read_json, get_nodes_from_dict, nodes_to_graph
+
+RENDER_JSON = True
+RENDER_SECTION = "all_nodes_graph"
 
 # Configuration file
 PATH = Path.absolute(Path(__file__)).parent
 config_path = PATH.parent / "configs" / "graph_config.toml"
 graph_config = read_graph_config(config_path)
 
+colors = {
+    "group": "darkorange",
+    "service": "teal",
+    "default": "lightblue",
+    "user": "darkseagreen",
+}
+
 # SRAM json export file
-sram_json_path = PATH.parent / "data" / "output.json"
-sram_dict = read_json(sram_json_path)
+if RENDER_JSON:
+    sram_json_path = PATH.parent / "data" / "output.json"
+    sram_dict = read_json(sram_json_path)
 
-colors = {"group": "darkorange", "service": "teal", "default": "lightblue"}
+    # Draw graph from sram json file
+    nodes = get_nodes_from_dict(sram_dict)
+    graph = nodes_to_graph(nodes)
+    color_nodes(graph, graph_config, **colors)
 
-# Draw graph from sram json file
-nodes = get_nodes_from_dict(sram_dict)
-graph = nodes_to_graph(nodes)
+    # render html
+    html_path = PATH.parent / "html" / "exported_graph.html"
+    render_editable_network(graph, html_path)
 
-color_nodes(graph, graph_config, **colors)
+# Draw graph section from config
+if RENDER_SECTION:
+    graph = nx.MultiDiGraph()
 
-# render html
-html_path = PATH.parent / "html" / "exported_graph.html"
-render_editable_network(graph, html_path)
+    # add edges of the graph indicated by section
+    add_graph_edges_from_config(graph, graph_config, RENDER_SECTION)
+    set_node_type(graph, graph_config)
+    set_node_levels_from_config(graph, graph_config)
+    color_nodes(graph, graph_config, **colors)
 
-
-# Draw standard graph
-graph = nx.MultiDiGraph()
-# add edges of the graph indicated by section "plain_graph"
-add_graph_edges_from_config(graph, graph_config, "plain_graph")
-
-# color nodes according to their type
-color_nodes(graph, graph_config, **colors)
-set_node_levels_from_config(graph, graph_config)
-# render html
-html_path = PATH.parent / "html" / "plain_graph.html"
-render_editable_network(graph, html_path)
+    # render html
+    html_path = PATH.parent / "html" / f"{RENDER_SECTION}.html"
+    render_editable_network(graph, html_path)
