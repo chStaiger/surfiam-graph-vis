@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Union
 import networkx as nx
 
+
 def read_json(fpath: Union[str, Path]) -> dict:
     """Read sram json export."""
     with open(fpath, "r", encoding="utf-8") as f:
@@ -61,9 +62,8 @@ def nodes_to_graph(nodes_sets: list) -> nx.MultiGraph:
     graph.add_node(
         nodes_sets[0]["node_name"],
         label=nodes_sets[0]["label"],
-        node_type="entity",
-        x=0,
-        y=0,
+        color_group="entity",
+        node_type="ORGANISATION",
     )
     add_units(graph, nodes_sets[1], nodes_sets[0]["node_name"])
     add_collaborations(graph, nodes_sets[2], nodes_sets[0]["node_name"])
@@ -73,14 +73,19 @@ def nodes_to_graph(nodes_sets: list) -> nx.MultiGraph:
 def add_units(graph: nx.MultiGraph, units: list, org: str):
     """Add units from nodes_set."""
     for unit in units:
-        graph.add_node(unit, node_type="entity")
+        graph.add_node(unit, color_group="entity", node_type="UNIT")
         graph.add_edge(org, unit, color="black")
 
 
 def add_collaborations(graph: nx.MultiGraph, collabs: dict, org: str):
     """Add collaborations from nodes_set."""
     for coll in collabs:
-        graph.add_node(coll["node_name"], label=coll["label"], node_type="entity")
+        graph.add_node(
+            coll["node_name"],
+            label=coll["label"],
+            color_group="entity",
+            node_type="COLLABORATION",
+        )
         edges_from = coll.get("edges_from", [])
         if len(edges_from) > 0:
             for from_node in edges_from:
@@ -88,11 +93,14 @@ def add_collaborations(graph: nx.MultiGraph, collabs: dict, org: str):
         else:
             graph.add_edge(org, coll["node_name"])
         for service in coll["services"]:
-            graph.add_node(service, node_type="service")
+            graph.add_node(service, color_group="service", node_type="APPLICATION")
             graph.add_edge(coll["node_name"], service, color="black")
         for group in coll["groups"]:
             graph.add_node(
-                f'{coll["node_name"]}_{group}', label=group, node_type="group"
+                f'{coll["node_name"]}_{group}',
+                label=group,
+                color_group="group",
+                node_type="CO_GROUP",
             )
             graph.add_edge(
                 coll["node_name"], f'{coll["node_name"]}_{group}', color="black"

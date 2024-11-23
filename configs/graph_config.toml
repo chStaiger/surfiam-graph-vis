@@ -1,35 +1,110 @@
-meta = ["type", "doc"]
-edge_types = ["action", "trust"]
-
-[nodes_types]
+[node_types]
 ORG_ADMIN.type = "role"
-ORG_ADMIN.level = 1
+ORG_ADMIN.level = 2
 ORG_MANAGER.type = "role"
-ORG_MANAGER.level = 1
-UNIT_MANAGER.type = "role"
-UNIT_MANAGER.level = 3
-COLLABORATION_ADMIN.type = "role"
-COLLABORATION_ADMIN.level = 5
+ORG_MANAGER.level = 2
+U_MANAGER.type = "role"
+U_MANAGER.level = 4
+COLL_ADMIN.type = "role"
+COLL_ADMIN.level = 6
 RESEARCHER.type = "user"
-RESEARCHER.level = 7
-CO_MEMBER.type = "role"
-CO_MEMBER.level = 7
+RESEARCHER.level = 8
+CO_MEMBER.type = "user"
+CO_MEMBER.level = 8
 
 APPLICATION.type = "service"
-APPLICATION.level = 8
+APPLICATION.level = 9
 COLLABORATION.type = "entity"
-COLLABORATION.level = 4
+COLLABORATION.level = 5
 ORGANISATION.type = "entity"
-ORGANISATION.level = 0
+ORGANISATION.level = 1
 UNIT.type = "entity"
-UNIT.level = 2
+UNIT.level = 3
 CO_GROUP.type = "group"
-CO_GROUP.level = 6
+CO_GROUP.level = 7
 APP_GROUP.type = "group"
-APP_GROUP.level = 6
+APP_GROUP.level = 7
+
+[edge_types]
+ACTIONS.labels = ["create", "invite", "add"]
+ACTIONS.color = "orange"
+TRUST.color = "purple"
+MEMBERS.color = "lightgrey"
+MEMBERS.label = "member_of"
+BACKBONE.color = "black"
+
+[all_nodes_graph]
+
+entities.edges = [["ORGANISATION", "UNIT"],
+                  ["ORGANISATION", "COLLABORATION_1"],
+                  ["UNIT", "COLLABORATION_2"],
+                  ["COLLABORATION_1", "APP_GROUP_1"],
+                  ["COLLABORATION_1", "CO_GROUP_1"],
+                  ["COLLABORATION_2", "APP_GROUP_2"],
+                  ["COLLABORATION_2", "CO_GROUP_2"],
+                  ["COLLABORATION_1", "APPLICATION_1"],
+                  ["COLLABORATION_1", "APPLICATION_2"],
+                  ["COLLABORATION_2", "APPLICATION_2"]
+                  ]
+entities.type = "BACKBONE"
+
+entity_role.edges = [["ORGANISATION", "ORG_ADMIN"],
+                     ["ORGANISATION", "ORG_MANAGER"],
+                     ["UNIT", "U_MANAGER"],
+                     ["COLLABORATION_1", "RESEARCHER_1"],
+                     ["COLLABORATION_1", "RESEARCHER_2"],
+                     ["COLLABORATION_2", "RESEARCHER_1"],
+                     ["COLLABORATION_1", "COLL_ADMIN_1"],
+                     ["COLLABORATION_1", "COLL_ADMIN_2"],
+                     ["COLLABORATION_2", "COLL_ADMIN_1"]
+                     ]
+entity_role.type = "BACKBONE"
+
+members.edges = [["RESEARCHER_1", "COLLABORATION_1"],
+                 ["RESEARCHER_1", "COLLABORATION_2"],
+                 ["RESEARCHER_2", "COLLABORATION_1"],
+                 ["COLL_ADMIN_1", "COLLABORATION_1"],
+                 ["COLL_ADMIN_2", "COLLABORATION_1"],
+                 ["COLL_ADMIN_1", "COLLABORATION_2"],
+                 ["RESEARCHER_1", "CO_GROUP_2"],
+                 ["RESEARCHER_1", "APP_GROUP_2"],
+                 ["RESEARCHER_2", "APP_GROUP_1"],
+                 ["RESEARCHER_2", "CO_GROUP_1"]
+                ]
+members.type = "MEMBERS"
+
+actions.edges = [["ORG_MANAGER", "COLLABORATION_1", "create"],
+                 ["U_MANAGER", "COLLABORATION_2", "create"],
+                 ["COLL_ADMIN_2", "RESEARCHER_1", "invite"],
+                 ["COLL_ADMIN_1", "RESEARCHER_2", "invite"],
+                 ["APPLICATION_2", "APP_GROUP_1", "create"],
+                 ["APPLICATION_2", "APP_GROUP_2", "create"],
+                 ["COLL_ADMIN_1", "CO_GROUP1", "create"],
+                 ["COLL_ADMIN_1", "CO_GROUP2", "create"]
+                ]
+actions.type = "ACTIONS"
 
 [plain_graph]
-COLLABORATION.members = ["RESEARCHER_1", "RESEARCHER_2", "COLLABORATION_ADMIN"]
-edges.entities = [["ORGANISATION", "COLLABORATION"]]
-edges.entity_role = [["ORGANISATION", "ORG_ADMIN"], ["ORGANISATION", "ORG_MANAGER"]]
-edges.actions = [["ORG_MANAGER", "COLLABORATION", "creates"], ["COLLABORATION_ADMIN", "RESEARCHER_1", "invites"], ["COLLABORATION_ADMIN", "RESEARCHER_2", "invites"]]
+
+entities.edges = [["ORGANISATION", "COLLABORATION"]]
+entities.type = "BACKBONE"
+
+entity_role.edges = [["ORGANISATION", "ORG_ADMIN"],
+                     ["ORGANISATION", "ORG_MANAGER"],
+                     ["COLLABORATION", "RESEARCHER_1"],
+                     ["COLLABORATION", "RESEARCHER_2"],
+                     ["COLLABORATION", "COLL_ADMIN"]
+                    ]
+entity_role.type = "BACKBONE"
+
+members.edges = [["RESEARCHER_1", "COLLABORATION"],
+                 ["RESEARCHER_2", "COLLABORATION"],
+                 ["COLL_ADMIN", "COLLABORATION"],
+                ]
+members.type = "MEMBERS"
+
+actions.edges = [["ORG_MANAGER", "COLLABORATION", "create"],
+                 ["COLL_ADMIN", "RESEARCHER_1", "invite"],
+                 ["COLL_ADMIN", "RESEARCHER_2", "invite"]
+                ]
+actions.type = "ACTIONS"
