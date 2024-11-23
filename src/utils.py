@@ -48,7 +48,23 @@ def color_nodes(
     entity: str = "gray",
     **kwargs,
 ):
-    """Color nodes according to their type in the config file."""
+    """Add the node attribute color to the nodes.
+    .
+    The function expects the graph to be annotated with node_type which should
+    correspond to the node_types in the graph_config.
+    Optionally the nodes can also be annotated with color_group which will be
+    translated to the color of entity, rol or as defined in kwargs.
+
+    Parameters:
+    ----------
+    graph: MultiDiGraph
+    graph_config: dict
+        The configuration file
+    kwargs:
+        A mapping from color_group to the actual color. E.g. {"user": "blue"}
+        You can also overwrite the default settings of role and entity with kwargs.
+    """
+
     default = kwargs.get("default", "lightblue")
     for node in graph.nodes():
         node_attrs = graph.nodes.get(node)
@@ -70,7 +86,11 @@ def color_nodes(
 
 def set_node_type(graph: nx.MultiDiGraph, graph_config: dict):
     """Add the type to each node in the graph.
-    Only used for graphs from the config file.
+    Only used for graphs rendered from the config file.
+
+    The function looks up the node type of a node in the configuration doictionary
+    by mapping each of the defined node_types as a prefix to the node.
+    The first one that matches defined the node type.
     """
     node_types = graph_config["node_types"].keys()
     for node in graph.nodes():
@@ -93,8 +113,12 @@ def set_node_type(graph: nx.MultiDiGraph, graph_config: dict):
 
 
 def set_node_levels_from_config(graph: nx.MultiDiGraph, graph_config: dict):
-    """Set the level of the node in the graph hierarchy.
+    """Set the level of the node in the graph hierarchy to the level defined in graph_config..
     Only used for graphs from the config file.
+
+    Nodes are expected to carry the a label node_type. this needs to correspond to one of
+    the node_types in graph_config. The function sets the level of a node to the number
+    found in the configuration
     """
     for node in graph.nodes():
         node_attrs = graph.nodes.get(node)
@@ -103,12 +127,19 @@ def set_node_levels_from_config(graph: nx.MultiDiGraph, graph_config: dict):
                 ntype = node_attrs["node_type"]
                 lvl = graph_config["node_types"][ntype]["level"]
                 graph.add_node(node, level=lvl)
+            else:
+                print(f"WARNING {node} is not labeled with its node_type. Cannot set level.")
 
 
 def add_graph_edges_from_config(
     graph: nx.MultiDiGraph, graph_config: dict, section: str
 ):
-    """Add the edges from a section in the config file."""
+    """Add the edges from a graph section in the config file and add the color label to the edge.
+
+    Default edge color is lightblue. The colors need to be defined in the section edge_types
+    in the configuration.
+    """
+
     for _, edge_set in graph_config[section].items():
         # defaults for edges
         color = "lighblue"  # default color, indicating edge color is not defined
