@@ -57,7 +57,25 @@ def get_nodes_from_dict(sram_org_dict: dict) -> list:
 
 
 def nodes_to_graph(nodes_sets: list) -> nx.MultiGraph:
-    """Add nodes and their adges to the graph."""
+    """Add nodes and their adges to the graph.
+
+    Also sets node attributes color_group, node_type and label, which are used
+    to create the hierarchical graph and add the coloring.
+
+    Parameters:
+    -----------
+    nodes_sets: list
+        List of nodes per type:
+        [{node_name: org_name, label: org_short_name},
+         [unit1, unit2, ...],
+         [{coll1}, {coll2, ...}]
+        ]
+        Where coll is a dictionary:
+         {node_name: str, label: str, units: list, services: list}
+
+    Returns:
+    graph: MultiDiGraph
+    """
     graph = nx.MultiDiGraph()
     graph.add_node(
         nodes_sets[0]["node_name"],
@@ -71,14 +89,18 @@ def nodes_to_graph(nodes_sets: list) -> nx.MultiGraph:
 
 
 def add_units(graph: nx.MultiGraph, units: list, org: str):
-    """Add units from nodes_set."""
+    """Add units from nodes_set.
+    Also sets the correct color_group and node_type attributes.
+    """
     for unit in units:
         graph.add_node(unit, color_group="entity", node_type="UNIT")
         graph.add_edge(org, unit, color="black")
 
 
 def add_collaborations(graph: nx.MultiGraph, collabs: dict, org: str):
-    """Add collaborations from nodes_set."""
+    """Add collaborations from nodes_set.
+    Also sets the correct label, color_group and node_type attributes.
+    """
     for coll in collabs:
         graph.add_node(
             coll["node_name"],
