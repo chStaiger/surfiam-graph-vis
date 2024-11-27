@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Draw the plain sram graph."""
 
 from pathlib import Path
