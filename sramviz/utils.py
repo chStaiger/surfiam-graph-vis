@@ -1,10 +1,10 @@
 """Utility functions to draw networks."""
 
 import os
-import tomllib
 from pathlib import Path
 
 import networkx as nx
+import tomllib
 from pyvis.network import Network
 
 

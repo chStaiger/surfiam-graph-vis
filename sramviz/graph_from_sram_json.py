@@ -2,7 +2,7 @@
 
 import json
 from pathlib import Path
-from typing import Union, Any
+from typing import Any, Union
 
 import networkx as nx
 
