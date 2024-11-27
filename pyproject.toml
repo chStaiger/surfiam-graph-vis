@@ -44,7 +44,7 @@ test = [
 
 
 [project.scripts]
-ibridges-gui = "sramviz.__main__:main"
+sramviz = "sramviz.__main__:main"
 
 [tool.setuptools]
 packages = ["sramviz"]
