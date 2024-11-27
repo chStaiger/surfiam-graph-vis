@@ -7,9 +7,12 @@ name: Python package
 on:
   push:
     branches:
+      - main
       - develop
     paths-ignore:
       - 'README.md'
+      - 'data/**'
+      - 'html/**'
       
   pull_request:
     paths-ignore:
