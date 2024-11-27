@@ -1,9 +1,10 @@
+#!/usr/bin/env python3
 """Draw the plain sram graph."""
 
 from pathlib import Path
 import networkx as nx
 
-from utils import (
+from sramviz.utils import (
     read_graph_config,
     color_nodes,
     render_editable_network,
@@ -12,7 +13,7 @@ from utils import (
     set_node_type,
 )
 
-from graph_from_sram_json import read_json, get_nodes_from_dict, nodes_to_graph
+from sramviz.graph_from_sram_json import read_json, get_nodes_from_dict, nodes_to_graph
 
 RENDER_JSON = True
 RENDER_SECTION = "all_nodes_graph"
