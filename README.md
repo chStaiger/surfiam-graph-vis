@@ -1,13 +1,34 @@
 # sram-graph-vis
-Python code to visualise SRAM
+Python code to visualise preconfigured SRAM graphs, SRAM json exports of an organisation and getting statistics from such a json.
 
 # Dependencies
+- networkx
+- pyvis
 
-```bash
-pip install -r requirements.txt
+# Installation
+
+## Install a git branch as python package
+
+```
+pip install git+https://github.com/chStaiger/sram-graph-vis.git@<branch>
 ```
 
+## Checlout code and install python package
+
+```
+# HTTP
+git clone https://github.com/chStaiger/sram-graph-vis.git
+# SSH
+git clone git@github.com:chStaiger/sram-graph-vis.git
+
+cd sram-graph-vis
+pip install -e .
+```
+
+
 # Usage
-```py
-python3 sramviz/draw_graph.py
+
+To run the main script simply type in the terminal:
+```
+sramviz
 ```
