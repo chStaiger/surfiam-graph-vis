@@ -1,0 +1,84 @@
+[build-system]
+requires = ["setuptools>=45", "setuptools-scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sramviz"
+authors = [
+    { name = "Christine Staiger", email = "christine.staiger@surf.nl" },
+]
+description = "Graphical representation of SRAM setup for an organisation."
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = ["sram"]
+license = { file = "LICENSE" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Development Status :: 3 - Alpha",
+]
+
+dependencies = [
+    "networkx",
+    "pyvis",
+]
+
+dynamic = ["version"]
+
+[project.urls]
+GitHub = "https://github.com/chStaiger/sram-graph-vis"
+documentation = "https://github.com/chStaiger/sram-graph-vis"
+
+[project.optional-dependencies]
+test = [
+    "pylint",
+    "pytest",
+    "pytest-cov",
+    "ruff",
+    "mypy",
+]
+
+
+[project.scripts]
+ibridges-gui = "sramviz.__main__:main"
+
+[tool.setuptools]
+packages = ["sramviz"]
+
+[tool.setuptools_scm]
+write_to = "sramviz/_version.py"
+
+[tool.mypy.overrides]
+module = [
+    "pyvis.*",
+]
+
+ignore_missing_imports = false
+
+[tool.pylint.'MASTER']
+ignore-patterns="_version.py"
+
+[tool.pylint.'BASIC']
+good-names=["e", "f", "m"]
+
+[tool.pylint.'VARIABLES']
+disable=["E0611", "E0401", "E0401", "E1101",
+         "W0718", "fixme", "too-many-arguments",
+         "R0912", "R0916", "R0911", "R0801", "R0902"]
+
+[tool.pylint.'MESSAGES CONTROL']
+disable="too-many-positional-arguments"
+
+max-line-length=100
+max-locals=35
+max-args=10
+
+[tool.ruff]
+exclude = ["_version.py", "ui_files"]
+line-length = 100
+lint.select = ["D", "E", "F", "W", "I", "N"]
+lint.ignore = ["D203", "D213"]
