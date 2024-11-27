@@ -52,12 +52,12 @@ packages = ["sramviz"]
 [tool.setuptools_scm]
 write_to = "sramviz/_version.py"
 
-[tool.mypy.overrides]
+[[tool.mypy.overrides]]
 module = [
-    "pyvis.*",
+    "networkx.*",
+    "pyvis.*"
 ]
-
-ignore_missing_imports = false
+ignore_missing_imports = true
 
 [tool.pylint.'MASTER']
 ignore-patterns="_version.py"
