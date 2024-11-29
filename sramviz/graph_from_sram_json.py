@@ -2,7 +2,8 @@
 
 import json
 from pathlib import Path
-from typing import Union
+from typing import Any, Union
+
 import networkx as nx
 
 
@@ -16,14 +17,14 @@ def read_json(fpath: Union[str, Path]) -> dict:
 def get_nodes_from_dict(sram_org_dict: dict) -> list:
     """Extract node names and types from dictionary on sram organisation level.
 
-    Parameters:
+    Parameters
     ----------
     sram_org_dict: dict
         A python dictionary generated from an SRAM export.
         Root node must be an Organistation.
 
-    Returns:
-    --------
+    Returns
+    -------
     List of nodes per type:
         [{node_name: org_name, label: org_short_name},
          [unit1, unit2, ...],
@@ -33,14 +34,14 @@ def get_nodes_from_dict(sram_org_dict: dict) -> list:
          {node_name: str, label: str, units: list, services: list}
 
     """
-    nodes = []
+    nodes: list[Any] = []
     org = {"node_name": sram_org_dict["name"]}
     org["label"] = sram_org_dict["short_name"]
     nodes.append(org)
     units = sram_org_dict["units"]
     nodes.append(units)
 
-    colls = []
+    colls: list[dict[str, Any]] = []
     for entry in sram_org_dict["collaborations"]:
         coll = {"node_name": entry["name"]}
         coll["label"] = entry["short_name"]
@@ -62,8 +63,8 @@ def nodes_to_graph(nodes_sets: list) -> nx.MultiGraph:
     Also sets node attributes color_group, node_type and label, which are used
     to create the hierarchical graph and add the coloring.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     nodes_sets: list
         List of nodes per type:
         [{node_name: org_name, label: org_short_name},
@@ -73,8 +74,10 @@ def nodes_to_graph(nodes_sets: list) -> nx.MultiGraph:
         Where coll is a dictionary:
          {node_name: str, label: str, units: list, services: list}
 
-    Returns:
+    Returns
+    -------
     graph: MultiDiGraph
+
     """
     graph = nx.MultiDiGraph()
     graph.add_node(
@@ -90,6 +93,7 @@ def nodes_to_graph(nodes_sets: list) -> nx.MultiGraph:
 
 def add_units(graph: nx.MultiGraph, units: list, org: str):
     """Add units from nodes_set.
+
     Also sets the correct color_group and node_type attributes.
     """
     for unit in units:
@@ -99,6 +103,7 @@ def add_units(graph: nx.MultiGraph, units: list, org: str):
 
 def add_collaborations(graph: nx.MultiGraph, collabs: dict, org: str):
     """Add collaborations from nodes_set.
+
     Also sets the correct label, color_group and node_type attributes.
     """
     for coll in collabs:

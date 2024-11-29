@@ -1,1 +1,1 @@
-"""SRAM visualisation modules"""
+"""SRAM visualisation modules."""

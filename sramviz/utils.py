@@ -1,15 +1,15 @@
 """Utility functions to draw networks."""
 
-import tomllib
 import os
 from pathlib import Path
+
 import networkx as nx
+import tomllib
 from pyvis.network import Network
 
 
 def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
     """Save the graph as html file."""
-
     nt = Network(height="750", width="90%", directed=True)
     # nt.show_buttons()
     # options for an editable graph
@@ -28,7 +28,7 @@ def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
             }
     }""")
     nt.from_nx(graph)
-    print("Rendering:")
+    print(f"Rendering {html_path}:")
     nt.show(html_path.name, notebook=False)
     # no option to geive a full path to nt.show or nt.save_graph
     os.replace(Path(os.getcwd()) / html_path.name, html_path)
@@ -49,22 +49,27 @@ def color_nodes(
     **kwargs,
 ):
     """Add the node attribute color to the nodes.
-    .
+
     The function expects the graph to be annotated with node_type which should
     correspond to the node_types in the graph_config.
     Optionally the nodes can also be annotated with color_group which will be
     translated to the color of entity, rol or as defined in kwargs.
 
-    Parameters:
+    Parameters
     ----------
     graph: MultiDiGraph
+        The graph rendered from a SRAM export or a section in the configuration file.
     graph_config: dict
         The configuration file
+    role:
+        Predefined color for node type role.
+    entity:
+        Predefined color for node type entity.
     kwargs:
         A mapping from color_group to the actual color. E.g. {"user": "blue"}
         You can also overwrite the default settings of role and entity with kwargs.
-    """
 
+    """
     default = kwargs.get("default", "lightblue")
     for node in graph.nodes():
         node_attrs = graph.nodes.get(node)
@@ -86,6 +91,7 @@ def color_nodes(
 
 def set_node_type(graph: nx.MultiDiGraph, graph_config: dict):
     """Add the type to each node in the graph.
+
     Only used for graphs rendered from the config file.
 
     The function looks up the node type of a node in the configuration doictionary
@@ -113,7 +119,8 @@ def set_node_type(graph: nx.MultiDiGraph, graph_config: dict):
 
 
 def set_node_levels_from_config(graph: nx.MultiDiGraph, graph_config: dict):
-    """Set the level of the node in the graph hierarchy to the level defined in graph_config..
+    """Set the level of the node in the graph hierarchy to the level defined in graph_config.
+
     Only used for graphs from the config file.
 
     Nodes are expected to carry the a label node_type. this needs to correspond to one of
@@ -139,7 +146,6 @@ def add_graph_edges_from_config(
     Default edge color is lightblue. The colors need to be defined in the section edge_types
     in the configuration.
     """
-
     for _, edge_set in graph_config[section].items():
         # defaults for edges
         color = "lighblue"  # default color, indicating edge color is not defined
