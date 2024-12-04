@@ -29,6 +29,7 @@ colors = {
     "service": "teal",
     "default": "lightblue",
     "user": "darkseagreen",
+    "admin": "darkseagreen",
 }
 
 MAIN_HELP_MESSAGE = f"""
@@ -117,6 +118,7 @@ def render_graph_from_json():
 
     nodes = get_nodes_from_dict(sram_dict)
     graph = nodes_to_graph(nodes)
+    set_node_levels_from_config(graph, graph_config)
     color_nodes(graph, graph_config, **colors)
     render_editable_network(graph, args.output.absolute())
 

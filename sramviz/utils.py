@@ -3,6 +3,7 @@
 import os
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 import networkx as nx
 import tomllib
 from pyvis.network import Network
@@ -10,15 +11,16 @@ from pyvis.network import Network
 
 def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
     """Save the graph as html file."""
+
     nt = Network(height="750", width="90%", directed=True)
-    # nt.show_buttons()
+    #nt.show_buttons()
     # options for an editable graph
     nt.set_options("""
         const options = {
             "manipulation": {"enabled": true},
             "interaction": {"navigationButtons": true},
             "physics": {"enabled": false, "minVelocity": 0.75},
-            "edges": {"smooth": false},
+            "edges": {"smooth": true},
             "layout": {
                 "hierarchical": {
                     "enabled": true,

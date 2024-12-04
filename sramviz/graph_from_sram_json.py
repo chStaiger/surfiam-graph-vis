@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any, Union
 
 import networkx as nx
-
+from pprint import pprint
 
 def read_json(fpath: Union[str, Path]) -> dict:
     """Read sram json export."""
@@ -28,10 +28,13 @@ def get_nodes_from_dict(sram_org_dict: dict) -> list:
     List of nodes per type:
         [{node_name: org_name, label: org_short_name},
          [unit1, unit2, ...],
-         [{coll1}, {coll2, ...}]
+         [{coll1}, {coll2, ...}],
+         {user1: {}, user2: {}}
         ]
         Where coll is a dictionary:
-         {node_name: str, label: str, units: list, services: list}
+         {node_name: str, label: str, units: list, services: list, users: list[str]}
+        Where user is a dictionary:
+         {"label": str, "created_by": str, "role": str, "create": list[str]}
 
     """
     nodes: list[Any] = []
@@ -42,7 +45,12 @@ def get_nodes_from_dict(sram_org_dict: dict) -> list:
     nodes.append(units)
 
     colls: list[dict[str, Any]] = []
+    users: dict[dict[str, Any]] = {}
     for entry in sram_org_dict["collaborations"]:
+        if entry["created_by"] not in users:
+            users[entry["created_by"]] = {"admin_of": []}
+        users[entry["created_by"]]["admin_of"].append(entry["name"])
+
         coll = {"node_name": entry["name"]}
         coll["label"] = entry["short_name"]
         coll["edges_from"] = entry["units"]
@@ -52,8 +60,19 @@ def get_nodes_from_dict(sram_org_dict: dict) -> list:
         coll["groups"] = []
         for group in entry["groups"]:
             coll["groups"].append(group["name"])
+        coll["users"] = []
+        for u_entry in entry["collaboration_memberships"]:
+            coll["users"].append(u_entry["user"]["uid"])
+            if u_entry["user"]["uid"] not in users:
+                users[u_entry["user"]["uid"]] = {}
+            if "label" not in users[u_entry["user"]["uid"]]:
+                users[u_entry["user"]["uid"]]["label"] = u_entry["user"]["username"]
+            if "created_by" not in users[u_entry["user"]["uid"]]:
+                users[u_entry["user"]["uid"]]["created_by"] = u_entry["created_by"]
         colls.append(coll)
+
     nodes.append(colls)
+    nodes.append(users)
     return nodes
 
 
@@ -69,10 +88,13 @@ def nodes_to_graph(nodes_sets: list) -> nx.MultiGraph:
         List of nodes per type:
         [{node_name: org_name, label: org_short_name},
          [unit1, unit2, ...],
-         [{coll1}, {coll2, ...}]
+         [{coll1}, {coll2, ...}],
+         [{user1}, {user2}, ...],
         ]
         Where coll is a dictionary:
          {node_name: str, label: str, units: list, services: list}
+        Where user is a dictionary:
+         {node_name: str, label: str, created_by: str, role: [admin, member], coll: str}
 
     Returns
     -------
@@ -88,6 +110,7 @@ def nodes_to_graph(nodes_sets: list) -> nx.MultiGraph:
     )
     add_units(graph, nodes_sets[1], nodes_sets[0]["node_name"])
     add_collaborations(graph, nodes_sets[2], nodes_sets[0]["node_name"])
+    add_users(graph, nodes_sets[3])
     return graph
 
 
@@ -132,3 +155,26 @@ def add_collaborations(graph: nx.MultiGraph, collabs: dict, org: str):
             graph.add_edge(
                 coll["node_name"], f'{coll["node_name"]}_{group}', color="black"
             )
+        for user in coll["users"]:
+            graph.add_edge(user, coll["node_name"], label="member_of", etype="MEMBER")
+
+
+def add_users(graph: nx.MultiGraph, users: dict):
+    """Add users from node_set."""
+
+    # add al user nodes
+    for user, u_dict in  users.items():
+        graph.add_node(
+            user,
+            color_group="role" if "admin_of" in u_dict  else "user",
+            label=u_dict["label"],
+            node_type="COLL_ADMIN" if "admin_of" in u_dict  else "CO_MEMBER"
+        )
+
+    # add action edges between users (admin, member) and collaborations
+    for user, u_dict in users.items():
+        if u_dict["created_by"] in graph:
+            graph.add_edge(u_dict["created_by"], user, label="invite", etype="ACTION")
+        if "admin_of" in u_dict:
+            for item in u_dict["admin_of"]:
+                graph.add_edge(user, item, label="create", etype="ACTION")
