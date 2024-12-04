@@ -178,3 +178,31 @@ def add_users(graph: nx.MultiGraph, users: dict):
             graph.add_edge(user, item, color="black")
         for item in u_dict["create"]:
             graph.add_edge(user, item, label="create", etype="ACTION")
+
+
+def stats_dict(nodes: list) -> dict:
+    """Get stats from nodes list."""
+    stats = {}
+    stats["units"] = {}
+    stats["units"]["names"] = nodes[1]
+    stats["collaborations"] = {}
+    stats["collaborations"]["names"] = [coll["node_name"] for coll in nodes[2]]
+    stats["users"] = len(set(u_list for coll in nodes[2] for u_list in coll["users"]))
+
+    for unit in stats["units"]["names"]:
+        stats["units"][unit] = {}
+        colls = [coll for coll in nodes[2] if unit in coll["edges_from"]]
+        stats["units"][unit]["collaborations"] = len(colls)
+        users = set(u_list for coll in colls for u_list in coll["users"])
+        stats["units"][unit]["users"] = len(users)
+
+    for coll in stats["collaborations"]["names"]:
+        stats["collaborations"][coll] = {}
+        coll_dict = [c for c in nodes[2] if c["node_name"] == coll][0]
+        stats["collaborations"][coll]["users"] = len(coll_dict["users"])
+        stats["collaborations"][coll]["groups"] = len(coll_dict["groups"])
+        stats["collaborations"][coll]["admins"] = len(
+            [u for u in nodes[3] if coll in nodes[3][u]["admin_of"]]
+        )
+
+    return stats

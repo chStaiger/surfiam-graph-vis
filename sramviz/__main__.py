@@ -8,7 +8,7 @@ from pathlib import Path
 
 import networkx as nx
 
-from sramviz.graph_from_sram_json import get_nodes_from_dict, nodes_to_graph, read_json
+from sramviz.graph_from_sram_json import get_nodes_from_dict, nodes_to_graph, read_json, stats_dict
 from sramviz.utils import (
     add_graph_edges_from_config,
     color_nodes,
@@ -180,7 +180,7 @@ def render_graph_from_config():
 def get_stats_from_json():
     """Get statistics of an SRAM organisation."""
     parser = argparse.ArgumentParser(
-        prog="sramviz stats", description="Render a graph section from the configuration file."
+        prog="sramviz stats", description="Retrieve statistics from SRAM json file."
     )
 
     parser.add_argument(
@@ -194,8 +194,8 @@ def get_stats_from_json():
     args = parser.parse_args()
 
     sram_dict = _parse_input(args)
-    print(sram_dict)
-    print("Not implemented yet.")
+    nodes = get_nodes_from_dict(sram_dict)
+    pprint.pprint(stats_dict(nodes))
 
 
 def _parse_config(args: argparse.Namespace) -> dict:
