@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any, Union
 
 import networkx as nx
-from pprint import pprint
+
 
 def read_json(fpath: Union[str, Path]) -> dict:
     """Read sram json export."""
@@ -154,23 +154,20 @@ def add_collaborations(graph: nx.MultiGraph, collabs: dict, org: str):
                 color_group="group",
                 node_type="CO_GROUP",
             )
-            graph.add_edge(
-                coll["node_name"], f'{coll["node_name"]}_{group}', color="black"
-            )
+            graph.add_edge(coll["node_name"], f'{coll["node_name"]}_{group}', color="black")
         for user in coll["users"]:
             graph.add_edge(user, coll["node_name"], label="member_of", etype="MEMBER")
 
 
 def add_users(graph: nx.MultiGraph, users: dict):
     """Add users from node_set."""
-
     # add al user nodes
-    for user, u_dict in  users.items():
+    for user, u_dict in users.items():
         graph.add_node(
             user,
-            color_group="role" if len(u_dict["admin_of"]) > 0  else "user",
+            color_group="role" if len(u_dict["admin_of"]) > 0 else "user",
             label=u_dict["label"],
-            node_type="COLL_ADMIN" if len(u_dict["admin_of"]) > 0  else "CO_MEMBER"
+            node_type="COLL_ADMIN" if len(u_dict["admin_of"]) > 0 else "CO_MEMBER",
         )
 
     # add action edges between users (admin, member) and collaborations
@@ -178,6 +175,6 @@ def add_users(graph: nx.MultiGraph, users: dict):
         if u_dict["created_by"] in graph:
             graph.add_edge(u_dict["created_by"], user, label="invite", etype="ACTION")
         for item in u_dict["admin_of"]:
-            graph.add_edge(user, item,  color="black")
+            graph.add_edge(user, item, color="black")
         for item in u_dict["create"]:
-            graph.add_edge(user, item,  label="create", etype="ACTION")
+            graph.add_edge(user, item, label="create", etype="ACTION")

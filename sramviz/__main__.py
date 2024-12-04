@@ -52,6 +52,7 @@ Example usage:
     sramviz stats -i data/output.json
 """
 
+
 def main() -> None:
     """CLI with different entrypoints."""
     subcommand = "--help" if len(sys.argv) < 2 else sys.argv.pop(1)
@@ -72,39 +73,36 @@ def main() -> None:
         print(f"Invalid subcommand ({subcommand}). For help see sramviz --help")
         sys.exit(1)
 
+
 def render_graph_from_json():
     """Render graph from the json export of an sram organisation."""
     parser = argparse.ArgumentParser(
         prog="sramviz organisation",
-        description="Render the graph of an SRAM organisation froman json export file."
+        description="Render the graph of an SRAM organisation froman json export file.",
     )
     parser.add_argument(
         "-i",
         "--input",
         help="The path to the json file from an export of an SRAM organisation.",
         type=Path,
-        required=True
+        required=True,
     )
     parser.add_argument(
         "-o",
         "--output",
         help="Path and name to store the generated html file.",
         type=Path,
-        required=True
+        required=True,
     )
     parser.add_argument(
         "-c",
         "--config",
         help="Configuration file defining node and edge types.",
         type=Path,
-        required=True
+        required=True,
     )
     parser.add_argument(
-        "-v",
-        "--verbose",
-        help="Verbose output.",
-        action="store_true",
-        default=False
+        "-v", "--verbose", help="Verbose output.", action="store_true", default=False
     )
     args = parser.parse_args()
 
@@ -122,11 +120,11 @@ def render_graph_from_json():
     color_nodes(graph, graph_config, **colors)
     render_editable_network(graph, args.output.absolute())
 
+
 def render_graph_from_config():
     """Render a graph section from the configuration file."""
     parser = argparse.ArgumentParser(
-        prog="sramviz graph",
-        description="Render a graph section from the configuration file."
+        prog="sramviz graph", description="Render a graph section from the configuration file."
     )
 
     parser.add_argument(
@@ -134,28 +132,24 @@ def render_graph_from_config():
         "--output",
         help="Path and name to store the generated html file.",
         type=Path,
-        required=True
+        required=True,
     )
     parser.add_argument(
         "-c",
         "--config",
         help="Configuration file defining node, edge types and the graph(s).",
         type=Path,
-        required=True
+        required=True,
     )
     parser.add_argument(
         "-g",
         "--graph",
         help="the name of the section in the config file which defines the edges of the graph.",
         type=str,
-        required=True
+        required=True,
     )
     parser.add_argument(
-        "-v",
-        "--verbose",
-        help="Verbose output.",
-        action="store_true",
-        default=False
+        "-v", "--verbose", help="Verbose output.", action="store_true", default=False
     )
 
     args = parser.parse_args()
@@ -182,11 +176,11 @@ def render_graph_from_config():
 
     render_editable_network(graph, args.output.absolute())
 
+
 def get_stats_from_json():
     """Get statistics of an SRAM organisation."""
     parser = argparse.ArgumentParser(
-        prog="sramviz stats",
-        description="Render a graph section from the configuration file."
+        prog="sramviz stats", description="Render a graph section from the configuration file."
     )
 
     parser.add_argument(
@@ -194,7 +188,7 @@ def get_stats_from_json():
         "--input",
         help="The path to the json file from an export of an SRAM organisation.",
         type=Path,
-        required=True
+        required=True,
     )
 
     args = parser.parse_args()
@@ -202,6 +196,7 @@ def get_stats_from_json():
     sram_dict = _parse_input(args)
     print(sram_dict)
     print("Not implemented yet.")
+
 
 def _parse_config(args: argparse.Namespace) -> dict:
     if args.config.is_file():
@@ -215,6 +210,7 @@ def _parse_config(args: argparse.Namespace) -> dict:
         print(f"Config {args.config.absolute()} is directory or does not exist. Exit.")
         sys.exit(234)
 
+
 def _parse_output(args: argparse.Namespace):
     if args.output.is_dir():
         print(f"Output {args.output} is a directory, cannot export graph.")
@@ -225,6 +221,7 @@ def _parse_output(args: argparse.Namespace):
             sys.exit(234)
     else:
         print(f"Saving graph as {args.output.absolute()}.")
+
 
 def _parse_input(args: argparse.Namespace) -> dict:
     if args.input.is_file():

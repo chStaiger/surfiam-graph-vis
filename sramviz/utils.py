@@ -3,7 +3,6 @@
 import os
 from pathlib import Path
 
-import matplotlib.pyplot as plt
 import networkx as nx
 import tomllib
 from pyvis.network import Network
@@ -11,9 +10,8 @@ from pyvis.network import Network
 
 def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
     """Save the graph as html file."""
-
     nt = Network(height="750", width="90%", directed=True)
-    #nt.show_buttons()
+    # nt.show_buttons()
     # options for an editable graph
     nt.set_options("""
         const options = {
@@ -109,9 +107,7 @@ def set_node_type(graph: nx.MultiDiGraph, graph_config: dict):
                 print(f"WARNING Cannot retrieve the type of {node} from the config.")
                 ntype = ""
             elif len(res) > 1:
-                print(
-                    f"WARNING {node} can be of types {res}. Setting type to {res[0]}."
-                )
+                print(f"WARNING {node} can be of types {res}. Setting type to {res[0]}.")
                 ntype = res[0]
                 color_group = graph_config["node_types"][ntype]["type"]
             else:
@@ -140,9 +136,7 @@ def set_node_levels_from_config(graph: nx.MultiDiGraph, graph_config: dict):
                 print(f"WARNING {node} is not labeled with its node_type. Cannot set level.")
 
 
-def add_graph_edges_from_config(
-    graph: nx.MultiDiGraph, graph_config: dict, section: str
-):
+def add_graph_edges_from_config(graph: nx.MultiDiGraph, graph_config: dict, section: str):
     """Add the edges from a graph section in the config file and add the color label to the edge.
 
     Default edge color is lightblue. The colors need to be defined in the section edge_types
