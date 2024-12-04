@@ -34,7 +34,7 @@ def get_nodes_from_dict(sram_org_dict: dict) -> list:
         Where coll is a dictionary:
          {node_name: str, label: str, units: list, services: list, users: list[str]}
         Where user is a dictionary:
-         {"label": str, "created_by": str, "role": str, "create": list[str]}
+         {"label": str, "created_by": str, "role": str, "create": list[str], "admin_of": list}
 
     """
     nodes: list[Any] = []
@@ -48,8 +48,8 @@ def get_nodes_from_dict(sram_org_dict: dict) -> list:
     users: dict[dict[str, Any]] = {}
     for entry in sram_org_dict["collaborations"]:
         if entry["created_by"] not in users:
-            users[entry["created_by"]] = {"admin_of": []}
-        users[entry["created_by"]]["admin_of"].append(entry["name"])
+            users[entry["created_by"]] = {"admin_of": [], "create": []}
+        users[entry["created_by"]]["create"].append(entry["name"])
 
         coll = {"node_name": entry["name"]}
         coll["label"] = entry["short_name"]
@@ -64,11 +64,13 @@ def get_nodes_from_dict(sram_org_dict: dict) -> list:
         for u_entry in entry["collaboration_memberships"]:
             coll["users"].append(u_entry["user"]["uid"])
             if u_entry["user"]["uid"] not in users:
-                users[u_entry["user"]["uid"]] = {}
+                users[u_entry["user"]["uid"]] = {"admin_of": [], "create": []}
             if "label" not in users[u_entry["user"]["uid"]]:
                 users[u_entry["user"]["uid"]]["label"] = u_entry["user"]["username"]
             if "created_by" not in users[u_entry["user"]["uid"]]:
                 users[u_entry["user"]["uid"]]["created_by"] = u_entry["created_by"]
+            if u_entry["role"] == "admin":
+                users[u_entry["user"]["uid"]]["admin_of"].append(entry["name"])
         colls.append(coll)
 
     nodes.append(colls)
@@ -166,15 +168,16 @@ def add_users(graph: nx.MultiGraph, users: dict):
     for user, u_dict in  users.items():
         graph.add_node(
             user,
-            color_group="role" if "admin_of" in u_dict  else "user",
+            color_group="role" if len(u_dict["admin_of"]) > 0  else "user",
             label=u_dict["label"],
-            node_type="COLL_ADMIN" if "admin_of" in u_dict  else "CO_MEMBER"
+            node_type="COLL_ADMIN" if len(u_dict["admin_of"]) > 0  else "CO_MEMBER"
         )
 
     # add action edges between users (admin, member) and collaborations
     for user, u_dict in users.items():
         if u_dict["created_by"] in graph:
             graph.add_edge(u_dict["created_by"], user, label="invite", etype="ACTION")
-        if "admin_of" in u_dict:
-            for item in u_dict["admin_of"]:
-                graph.add_edge(user, item, label="create", etype="ACTION")
+        for item in u_dict["admin_of"]:
+            graph.add_edge(user, item,  color="black")
+        for item in u_dict["create"]:
+            graph.add_edge(user, item,  label="create", etype="ACTION")
