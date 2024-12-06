@@ -33,7 +33,7 @@ def get_nodes_from_dict(sram_org_dict: dict) -> list:
         ]
         Where coll is a dictionary:
          {node_name: str, label: str, units: list, services: list, users: list[str]}
-        Where user is a dictionary:
+        And user is a dictionary:
          {"label": str, "created_by": str, "role": str, "create": list[str], "admin_of": list}
 
     """
@@ -61,16 +61,19 @@ def get_nodes_from_dict(sram_org_dict: dict) -> list:
         for group in entry["groups"]:
             coll["groups"].append(group["name"])
         coll["users"] = []
-        for u_entry in entry["collaboration_memberships"]:
-            coll["users"].append(u_entry["user"]["uid"])
-            if u_entry["user"]["uid"] not in users:
-                users[u_entry["user"]["uid"]] = {"admin_of": [], "create": []}
-            if "label" not in users[u_entry["user"]["uid"]]:
-                users[u_entry["user"]["uid"]]["label"] = u_entry["user"]["username"]
-            if "created_by" not in users[u_entry["user"]["uid"]]:
-                users[u_entry["user"]["uid"]]["created_by"] = u_entry["created_by"]
-            if u_entry["role"] == "admin":
-                users[u_entry["user"]["uid"]]["admin_of"].append(entry["name"])
+        if "collaboration_memberships" in entry:
+            for u_entry in entry["collaboration_memberships"]:
+                coll["users"].append(u_entry["user"]["uid"])
+                if u_entry["user"]["uid"] not in users:
+                    users[u_entry["user"]["uid"]] = {"admin_of": [], "create": []}
+                if "label" not in users[u_entry["user"]["uid"]]:
+                    users[u_entry["user"]["uid"]]["label"] = u_entry["user"]["username"]
+                if "created_by" not in users[u_entry["user"]["uid"]]:
+                    users[u_entry["user"]["uid"]]["created_by"] = u_entry["created_by"]
+                if u_entry["role"] == "admin":
+                    users[u_entry["user"]["uid"]]["admin_of"].append(entry["name"])
+        else:
+            print(f"INFO: No user info, 'collaboration_memberships' not in {entry['name']}.")
         colls.append(coll)
 
     nodes.append(colls)
