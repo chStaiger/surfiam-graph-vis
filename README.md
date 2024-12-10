@@ -13,7 +13,7 @@ Python code to visualise preconfigured SRAM graphs, SRAM json exports of an orga
 pip install git+https://github.com/chStaiger/sram-graph-vis.git@<branch>
 ```
 
-## Checlout code and install python package
+## Checkout code and install python package
 
 ```
 # HTTP

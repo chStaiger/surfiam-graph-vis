@@ -28,10 +28,13 @@ def get_nodes_from_dict(sram_org_dict: dict) -> list:
     List of nodes per type:
         [{node_name: org_name, label: org_short_name},
          [unit1, unit2, ...],
-         [{coll1}, {coll2, ...}]
+         [{coll1}, {coll2, ...}],
+         {user1: {}, user2: {}}
         ]
         Where coll is a dictionary:
-         {node_name: str, label: str, units: list, services: list}
+         {node_name: str, label: str, units: list, services: list, users: list[str]}
+        And user is a dictionary:
+         {"label": str, "created_by": str, "role": str, "create": list[str], "admin_of": list}
 
     """
     nodes: list[Any] = []
@@ -42,7 +45,12 @@ def get_nodes_from_dict(sram_org_dict: dict) -> list:
     nodes.append(units)
 
     colls: list[dict[str, Any]] = []
+    users: dict[dict[str, Any]] = {}
     for entry in sram_org_dict["collaborations"]:
+        if entry["created_by"] not in users:
+            users[entry["created_by"]] = {"admin_of": [], "create": []}
+        users[entry["created_by"]]["create"].append(entry["name"])
+
         coll = {"node_name": entry["name"]}
         coll["label"] = entry["short_name"]
         coll["edges_from"] = entry["units"]
@@ -52,8 +60,24 @@ def get_nodes_from_dict(sram_org_dict: dict) -> list:
         coll["groups"] = []
         for group in entry["groups"]:
             coll["groups"].append(group["name"])
+        coll["users"] = []
+        if "collaboration_memberships" in entry:
+            for u_entry in entry["collaboration_memberships"]:
+                coll["users"].append(u_entry["user"]["uid"])
+                if u_entry["user"]["uid"] not in users:
+                    users[u_entry["user"]["uid"]] = {"admin_of": [], "create": []}
+                if "label" not in users[u_entry["user"]["uid"]]:
+                    users[u_entry["user"]["uid"]]["label"] = u_entry["user"]["username"]
+                if "created_by" not in users[u_entry["user"]["uid"]]:
+                    users[u_entry["user"]["uid"]]["created_by"] = u_entry["created_by"]
+                if u_entry["role"] == "admin":
+                    users[u_entry["user"]["uid"]]["admin_of"].append(entry["name"])
+        else:
+            print(f"INFO: No user info, 'collaboration_memberships' not in {entry['name']}.")
         colls.append(coll)
+
     nodes.append(colls)
+    nodes.append(users)
     return nodes
 
 
@@ -69,10 +93,13 @@ def nodes_to_graph(nodes_sets: list) -> nx.MultiGraph:
         List of nodes per type:
         [{node_name: org_name, label: org_short_name},
          [unit1, unit2, ...],
-         [{coll1}, {coll2, ...}]
+         [{coll1}, {coll2, ...}],
+         [{user1}, {user2}, ...],
         ]
         Where coll is a dictionary:
          {node_name: str, label: str, units: list, services: list}
+        Where user is a dictionary:
+         {node_name: str, label: str, created_by: str, role: [admin, member], coll: str}
 
     Returns
     -------
@@ -88,6 +115,7 @@ def nodes_to_graph(nodes_sets: list) -> nx.MultiGraph:
     )
     add_units(graph, nodes_sets[1], nodes_sets[0]["node_name"])
     add_collaborations(graph, nodes_sets[2], nodes_sets[0]["node_name"])
+    add_users(graph, nodes_sets[3])
     return graph
 
 
@@ -129,6 +157,55 @@ def add_collaborations(graph: nx.MultiGraph, collabs: dict, org: str):
                 color_group="group",
                 node_type="CO_GROUP",
             )
-            graph.add_edge(
-                coll["node_name"], f'{coll["node_name"]}_{group}', color="black"
-            )
+            graph.add_edge(coll["node_name"], f'{coll["node_name"]}_{group}', color="black")
+        for user in coll["users"]:
+            graph.add_edge(user, coll["node_name"], label="member_of", etype="MEMBER")
+
+
+def add_users(graph: nx.MultiGraph, users: dict):
+    """Add users from node_set."""
+    # add al user nodes
+    for user, u_dict in users.items():
+        graph.add_node(
+            user,
+            color_group="role" if len(u_dict["admin_of"]) > 0 else "user",
+            label=u_dict["label"],
+            node_type="COLL_ADMIN" if len(u_dict["admin_of"]) > 0 else "CO_MEMBER",
+        )
+
+    # add action edges between users (admin, member) and collaborations
+    for user, u_dict in users.items():
+        if u_dict["created_by"] in graph:
+            graph.add_edge(u_dict["created_by"], user, label="invite", etype="ACTION")
+        for item in u_dict["admin_of"]:
+            graph.add_edge(user, item, color="black")
+        for item in u_dict["create"]:
+            graph.add_edge(user, item, label="create", etype="ACTION")
+
+
+def stats_dict(nodes: list) -> dict:
+    """Get stats from nodes list."""
+    stats = {}
+    stats["units"] = {}
+    stats["units"]["names"] = nodes[1]
+    stats["collaborations"] = {}
+    stats["collaborations"]["names"] = [coll["node_name"] for coll in nodes[2]]
+    stats["users"] = len(set(u_list for coll in nodes[2] for u_list in coll["users"]))
+
+    for unit in stats["units"]["names"]:
+        stats["units"][unit] = {}
+        colls = [coll for coll in nodes[2] if unit in coll["edges_from"]]
+        stats["units"][unit]["collaborations"] = len(colls)
+        users = set(u_list for coll in colls for u_list in coll["users"])
+        stats["units"][unit]["users"] = len(users)
+
+    for coll in stats["collaborations"]["names"]:
+        stats["collaborations"][coll] = {}
+        coll_dict = [c for c in nodes[2] if c["node_name"] == coll][0]
+        stats["collaborations"][coll]["users"] = len(coll_dict["users"])
+        stats["collaborations"][coll]["groups"] = len(coll_dict["groups"])
+        stats["collaborations"][coll]["admins"] = len(
+            [u for u in nodes[3] if coll in nodes[3][u]["admin_of"]]
+        )
+
+    return stats
