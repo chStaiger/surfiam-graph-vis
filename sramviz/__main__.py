@@ -118,7 +118,7 @@ def render_graph_from_json():
     graph = nodes_to_graph(nodes)
     set_node_levels_from_config(graph, graph_config)
     color_nodes(graph, graph_config, **colors)
-    render_editable_network(graph, args.output.absolute())
+    render_editable_network(graph, args.output.absolute(), args.verbose)
 
 
 def render_graph_from_config():
@@ -174,7 +174,7 @@ def render_graph_from_config():
     set_node_levels_from_config(graph, graph_config)
     color_nodes(graph, graph_config, **colors)
 
-    render_editable_network(graph, args.output.absolute())
+    render_editable_network(graph, args.output.absolute(), args.verbose)
 
 
 def get_stats_from_json():

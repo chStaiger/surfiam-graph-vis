@@ -126,7 +126,7 @@ def add_units(graph: nx.MultiGraph, units: list, org: str):
     """
     for unit in units:
         graph.add_node(unit, color_group="entity", node_type="UNIT")
-        graph.add_edge(org, unit, color="black")
+        graph.add_edge(org, unit, color="black", edge_type="BACKBONE")
 
 
 def add_collaborations(graph: nx.MultiGraph, collabs: dict, org: str):
@@ -144,12 +144,12 @@ def add_collaborations(graph: nx.MultiGraph, collabs: dict, org: str):
         edges_from = coll.get("edges_from", [])
         if len(edges_from) > 0:
             for from_node in edges_from:
-                graph.add_edge(from_node, coll["node_name"], color="black")
+                graph.add_edge(from_node, coll["node_name"], color="black", edge_type="BACKBONE")
         else:
             graph.add_edge(org, coll["node_name"])
         for service in coll["services"]:
             graph.add_node(service, color_group="service", node_type="APPLICATION")
-            graph.add_edge(coll["node_name"], service, color="black")
+            graph.add_edge(coll["node_name"], service, color="black", edge_type="BACKBONE")
         for group in coll["groups"]:
             graph.add_node(
                 f'{coll["node_name"]}_{group}',
@@ -157,9 +157,9 @@ def add_collaborations(graph: nx.MultiGraph, collabs: dict, org: str):
                 color_group="group",
                 node_type="CO_GROUP",
             )
-            graph.add_edge(coll["node_name"], f'{coll["node_name"]}_{group}', color="black")
+            graph.add_edge(coll["node_name"], f'{coll["node_name"]}_{group}', color="black", edge_type="BACKBONE")
         for user in coll["users"]:
-            graph.add_edge(user, coll["node_name"], label="member_of", etype="MEMBER")
+            graph.add_edge(user, coll["node_name"], label="member_of", edge_type="MEMBER")
 
 
 def add_users(graph: nx.MultiGraph, users: dict):
@@ -176,11 +176,11 @@ def add_users(graph: nx.MultiGraph, users: dict):
     # add action edges between users (admin, member) and collaborations
     for user, u_dict in users.items():
         if u_dict["created_by"] in graph:
-            graph.add_edge(u_dict["created_by"], user, label="invite", etype="ACTION")
+            graph.add_edge(u_dict["created_by"], user, label="invite", edge_type="ACTION")
         for item in u_dict["admin_of"]:
-            graph.add_edge(user, item, color="black")
+            graph.add_edge(user, item, color="black", edge_type="BACKBONE")
         for item in u_dict["create"]:
-            graph.add_edge(user, item, label="create", etype="ACTION")
+            graph.add_edge(user, item, label="create", edge_type="ACTION")
 
 
 def stats_dict(nodes: list) -> dict:
