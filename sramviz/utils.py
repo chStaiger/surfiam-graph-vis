@@ -9,7 +9,7 @@ import tomllib
 from pyvis.network import Network
 
 
-def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, debug: bool=False):
+def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, debug: bool = False):
     """Save the graph as html file."""
     nt = Network(height="750", width="90%", directed=True, filter_menu=True)
     # nt.show_buttons()

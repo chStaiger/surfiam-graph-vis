@@ -157,7 +157,12 @@ def add_collaborations(graph: nx.MultiGraph, collabs: dict, org: str):
                 color_group="group",
                 node_type="CO_GROUP",
             )
-            graph.add_edge(coll["node_name"], f'{coll["node_name"]}_{group}', color="black", edge_type="BACKBONE")
+            graph.add_edge(
+                coll["node_name"],
+                f'{coll["node_name"]}_{group}',
+                color="black",
+                edge_type="BACKBONE",
+            )
         for user in coll["users"]:
             graph.add_edge(user, coll["node_name"], label="member_of", edge_type="MEMBER")
 
