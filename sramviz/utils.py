@@ -2,15 +2,16 @@
 
 import os
 from pathlib import Path
+from pprint import pprint
 
 import networkx as nx
 import tomllib
 from pyvis.network import Network
 
 
-def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
+def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, debug: bool=False):
     """Save the graph as html file."""
-    nt = Network(height="750", width="90%", directed=True)
+    nt = Network(height="750", width="90%", directed=True, filter_menu=True)
     # nt.show_buttons()
     # options for an editable graph
     nt.set_options("""
@@ -28,6 +29,9 @@ def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
             }
     }""")
     nt.from_nx(graph)
+    if debug:
+        pprint(nt.edges)
+        pprint(nt.nodes)
     print(f"Rendering {html_path}:")
     nt.show(html_path.name, notebook=False)
     # no option to geive a full path to nt.show or nt.save_graph
@@ -157,8 +161,8 @@ def add_graph_edges_from_config(graph: nx.MultiDiGraph, graph_config: dict, sect
 
         for edge in edge_set["edges"]:
             if len(edge) == 2:
-                graph.add_edge(edge[0], edge[1], color=color, label=label)
+                graph.add_edge(edge[0], edge[1], edge_type=etype, color=color, label=label)
             elif len(edge) == 3:
-                graph.add_edge(edge[0], edge[1], color=color, label=edge[2])
+                graph.add_edge(edge[0], edge[1], edge_type=etype, color=color, label=edge[2])
             else:
                 print(f"WARNING Something is wrong with {edge}. Expect [u, v, label].")
