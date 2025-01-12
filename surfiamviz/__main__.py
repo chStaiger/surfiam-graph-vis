@@ -8,7 +8,12 @@ from pathlib import Path
 
 import networkx as nx
 
-from surfiamviz.graph_from_sram_json import get_nodes_from_dict, nodes_to_graph, read_json, stats_dict
+from surfiamviz.graph_from_sram_json import (
+    get_nodes_from_dict,
+    nodes_to_graph,
+    read_json,
+    stats_dict,
+)
 from surfiamviz.utils import (
     add_graph_edges_from_config,
     color_nodes,
