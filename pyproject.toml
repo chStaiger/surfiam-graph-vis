@@ -44,13 +44,13 @@ test = [
 
 
 [project.scripts]
-sramviz = "surfiamviz.__main__:main"
+surfiamviz = "surfiamviz.__main__:main"
 
 [tool.setuptools]
-packages = ["sramviz"]
+packages = ["surfiamviz"]
 
 [tool.setuptools_scm]
-write_to = "sramviz/_version.py"
+write_to = "surfiamviz/_version.py"
 
 [[tool.mypy.overrides]]
 module = [
