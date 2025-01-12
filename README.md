@@ -21,7 +21,7 @@ git clone https://github.com/chStaiger/surfiam-graph-vis.git
 # SSH
 git clone git@github.com:chStaiger/surfiam-graph-vis.git
 
-cd sram-graph-vis
+cd surfiam-graph-vis
 pip install -e .
 ```
 
