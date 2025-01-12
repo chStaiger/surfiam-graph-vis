@@ -8,8 +8,13 @@ from pathlib import Path
 
 import networkx as nx
 
-from sramviz.graph_from_sram_json import get_nodes_from_dict, nodes_to_graph, read_json, stats_dict
-from sramviz.utils import (
+from surfiamviz.graph_from_sram_json import (
+    get_nodes_from_dict,
+    nodes_to_graph,
+    read_json,
+    stats_dict,
+)
+from surfiamviz.utils import (
     add_graph_edges_from_config,
     color_nodes,
     read_graph_config,
@@ -33,9 +38,9 @@ colors = {
 }
 
 MAIN_HELP_MESSAGE = f"""
-SRAM graph visualisation version {version("sramviz")}
+SRAM graph visualisation version {version("surfiamviz")}
 
-Usage: sramviz [subcommand] [options]
+Usage: surfiamviz [subcommand] [options]
 
 Available subcommands:
     organisation
@@ -47,9 +52,9 @@ Available subcommands:
 
 Example usage:
 
-    sramviz graph -o html/test.html -c configs/graph_config.toml -g plain_graph -v
-    sramviz organisation -i data/output.json -o html/test.html -c configs/graph_config.toml
-    sramviz stats -i data/output.json
+    surfiamviz graph -o html/test.html -c configs/graph_config.toml -g plain_graph -v
+    surfiamviz organisation -i data/output.json -o html/test.html -c configs/graph_config.toml
+    surfiamviz stats -i data/output.json
 """
 
 
@@ -60,7 +65,7 @@ def main() -> None:
     if subcommand in ["-h", "--help"]:
         print(MAIN_HELP_MESSAGE)
     elif subcommand in ["-v", "--version"]:
-        print(f"sramviz version {version('sramviz')}")
+        print(f"surfiamviz version {version('surfiamviz')}")
 
     # find the subcommand in this module and run it!
     elif subcommand == "organisation":
@@ -70,14 +75,14 @@ def main() -> None:
     elif subcommand == "stats":
         get_stats_from_json()
     else:
-        print(f"Invalid subcommand ({subcommand}). For help see sramviz --help")
+        print(f"Invalid subcommand ({subcommand}). For help see surfiamviz --help")
         sys.exit(1)
 
 
 def render_graph_from_json():
     """Render graph from the json export of an sram organisation."""
     parser = argparse.ArgumentParser(
-        prog="sramviz organisation",
+        prog="surfiamviz organisation",
         description="Render the graph of an SRAM organisation froman json export file.",
     )
     parser.add_argument(
@@ -124,7 +129,7 @@ def render_graph_from_json():
 def render_graph_from_config():
     """Render a graph section from the configuration file."""
     parser = argparse.ArgumentParser(
-        prog="sramviz graph", description="Render a graph section from the configuration file."
+        prog="surfiamviz graph", description="Render a graph section from the configuration file."
     )
 
     parser.add_argument(
@@ -180,7 +185,7 @@ def render_graph_from_config():
 def get_stats_from_json():
     """Get statistics of an SRAM organisation."""
     parser = argparse.ArgumentParser(
-        prog="sramviz stats", description="Retrieve statistics from SRAM json file."
+        prog="surfiamviz stats", description="Retrieve statistics from SRAM json file."
     )
 
     parser.add_argument(
