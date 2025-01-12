@@ -48,8 +48,8 @@ jobs:
 
     - name: Lint with Ruff
       run: |
-        ruff check sramviz
+        ruff check surfiamviz
 
     - name: Lint with PyLint
       run: |
-        pylint sramviz
+        pylint surfiamviz
