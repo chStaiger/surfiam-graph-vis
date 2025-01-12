@@ -80,7 +80,7 @@ def color_nodes(
         if "color_group" in node_attrs:
             color_group = node_attrs["color_group"]
         elif node_attrs["node_type"] in graph_config["node_types"]:
-            color_group = graph_config["node_types"][node].get("type", "default")
+            color_group = graph_config["node_types"][node].get("name", "default")
         else:
             color_group = "default"
         if color_group == "role":
@@ -113,10 +113,10 @@ def set_node_type(graph: nx.MultiDiGraph, graph_config: dict):
             elif len(res) > 1:
                 print(f"WARNING {node} can be of types {res}. Setting type to {res[0]}.")
                 ntype = res[0]
-                color_group = graph_config["node_types"][ntype]["type"]
+                color_group = graph_config["node_types"][ntype]["name"]
             else:
                 ntype = res[0]
-                color_group = graph_config["node_types"][ntype]["type"]
+                color_group = graph_config["node_types"][ntype]["name"]
             graph.add_node(node, node_type=ntype, color_group=color_group)
 
 
