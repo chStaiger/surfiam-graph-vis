@@ -3,7 +3,7 @@ requires = ["setuptools>=45", "setuptools-scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sramviz"
+name = "surfiamviz"
 authors = [
     { name = "Christine Staiger", email = "christine.staiger@surf.nl" },
 ]
@@ -30,8 +30,8 @@ dependencies = [
 dynamic = ["version"]
 
 [project.urls]
-GitHub = "https://github.com/chStaiger/sram-graph-vis"
-documentation = "https://github.com/chStaiger/sram-graph-vis"
+GitHub = "https://github.com/chStaiger/surfiam-graph-vis"
+documentation = "https://github.com/chStaiger/surgiam-graph-vis"
 
 [project.optional-dependencies]
 test = [
@@ -44,7 +44,7 @@ test = [
 
 
 [project.scripts]
-sramviz = "sramviz.__main__:main"
+sramviz = "surfiamviz.__main__:main"
 
 [tool.setuptools]
 packages = ["sramviz"]
