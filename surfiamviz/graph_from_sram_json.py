@@ -213,4 +213,4 @@ def stats_dict(nodes: list) -> dict:
             [u for u in nodes[3] if coll in nodes[3][u]["admin_of"]]
         )
 
-    return stats
+    return json.dumps(stats, indent = 4)

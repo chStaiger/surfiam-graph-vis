@@ -200,7 +200,7 @@ def get_stats_from_json():
 
     sram_dict = _parse_input(args)
     nodes = get_nodes_from_dict(sram_dict)
-    pprint.pprint(stats_dict(nodes))
+    print(stats_dict(nodes))
 
 
 def _parse_config(args: argparse.Namespace) -> dict:
