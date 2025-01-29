@@ -8,6 +8,11 @@ from pathlib import Path
 
 import networkx as nx
 
+from surfiamviz.graph_from_config import (
+    add_graph_edges_from_config,
+    set_node_levels_from_config,
+    set_node_type,
+)
 from surfiamviz.graph_from_sram_json import (
     get_nodes_from_dict,
     nodes_to_graph,
@@ -15,27 +20,16 @@ from surfiamviz.graph_from_sram_json import (
     stats_dict,
 )
 from surfiamviz.utils import (
-    add_graph_edges_from_config,
+    color_edges,
     color_nodes,
     read_graph_config,
     render_editable_network,
-    set_node_levels_from_config,
-    set_node_type,
 )
 
 try:  # Python < 3.10 (backport)
     from importlib_metadata import version  # type: ignore
 except ImportError:
     from importlib.metadata import version  # type: ignore [assignment]
-
-# Preconfiguration
-colors = {
-    "group": "darkorange",
-    "service": "teal",
-    "default": "lightblue",
-    "user": "darkseagreen",
-    "admin": "darkseagreen",
-}
 
 MAIN_HELP_MESSAGE = f"""
 SRAM graph visualisation version {version("surfiamviz")}
@@ -122,7 +116,8 @@ def render_graph_from_json():
     nodes = get_nodes_from_dict(sram_dict)
     graph = nodes_to_graph(nodes)
     set_node_levels_from_config(graph, graph_config)
-    color_nodes(graph, graph_config, **colors)
+    color_nodes(graph, graph_config)
+    color_edges(graph, graph_config)
     render_editable_network(graph, args.output.absolute(), args.verbose)
 
 
@@ -177,8 +172,8 @@ def render_graph_from_config():
     add_graph_edges_from_config(graph, graph_config, args.graph)
     set_node_type(graph, graph_config)
     set_node_levels_from_config(graph, graph_config)
-    color_nodes(graph, graph_config, **colors)
-
+    color_nodes(graph, graph_config)
+    color_edges(graph, graph_config)
     render_editable_network(graph, args.output.absolute(), args.verbose)
 
 
