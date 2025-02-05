@@ -14,7 +14,7 @@ def get_sram_org(token: str, server: str = "https://acc.sram.surf.nl") -> dict:
     headers = {"Accept": "application/json"}
     headers = {"Authorization": f"Bearer {token}"}
 
-    response = requests.get(url=url, headers=headers)
+    response = requests.get(url=url, headers=headers, timeout=10)
     sram_dict = json.loads(response.content)
     if "error" in sram_dict:
         raise requests.HTTPError(sram_dict["message"])
