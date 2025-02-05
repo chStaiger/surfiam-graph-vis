@@ -25,6 +25,7 @@ classifiers = [
 dependencies = [
     "networkx",
     "pyvis",
+    "requests"
 ]
 
 dynamic = ["version"]
