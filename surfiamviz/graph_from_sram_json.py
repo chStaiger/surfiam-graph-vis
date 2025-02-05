@@ -5,6 +5,21 @@ from pathlib import Path
 from typing import Any, Union
 
 import networkx as nx
+import requests
+
+
+def get_sram_org(token: str, server: str = "https://acc.sram.surf.nl") -> dict:
+    """Retrieve sram org json from API."""
+    url = server + "/api/organisations/v1"
+    headers = {"Accept": "application/json"}
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = requests.get(url=url, headers=headers)
+    sram_dict = json.loads(response.content)
+    if "error" in sram_dict:
+        raise requests.HTTPError(sram_dict["message"])
+
+    return sram_dict
 
 
 def read_json(fpath: Union[str, Path]) -> dict:
