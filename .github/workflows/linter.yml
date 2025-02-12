@@ -53,3 +53,7 @@ jobs:
     - name: Lint with PyLint
       run: |
         pylint surfiamviz
+
+    - name: Test with pytest
+      run: |
+        pytest tests
