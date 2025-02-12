@@ -2,7 +2,7 @@
 # https://github.com/actions/starter-workflows/blob/master/ci/python-package.yml
 # (C) Github, MIT License
 
-name: Python package
+name: Python tests
 
 on:
   push:
