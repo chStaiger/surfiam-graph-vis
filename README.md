@@ -79,17 +79,21 @@ The names for colours are taken from the [matplotlib colour scheme](https://matp
 
 ## Plotting exported SRAM graphs
 
-To visualise the actual situation of your SRAM organisation you will need an export to a json from the SRAM API:
+To visualise the actual situation of your SRAM organisation you can either directly plot the information from the server:
 
 ```
-curl -X GET "https://acc.sram.surf.nl/api/organisations/v1" -H  "accept: application/json" -H  "Authorization: Bearer <YOUR TOKEN>" | jq > sram_output.json
+surfiamviz organisation -o test.html -c configs/sram_config.toml --server <SRAM SERVER> --token <SRAM TOKEN>
 ```
 
-The file `sram_output.json` is used in the visualisation together with the configuration file to draw the graph:
+Or first download the information to a json file and plot it subsequently:
 
 ```
-surfiamviz organisation -i sram_output.json -o test.html -c configs/sram_config.toml
+surfiamviz download --server <SRAM SERVER> --token <SRAM TOKEN --file sram_org.json
+surfiamviz organisation -o test.html -c configs/sram_config.toml --input sram_org.json
 ```
+
+
+The file `sram_org.json` is used in the visualisation together with the configuration file to draw the graph:
 
 We provide an example json file in `data/sram_test_org.json`.
 
