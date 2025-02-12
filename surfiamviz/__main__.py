@@ -53,15 +53,15 @@ Available subcommands:
 
 Example usage:
 
-    surfiamviz list -c configs/graph_config.toml
-    surfiamviz graph -o html/test.html -c configs/graph_config.toml -g plain_graph -v
+    surfiamviz list -c configs/sram_config.toml
+    surfiamviz graph -o test.html -c configs/sram_config.toml -g plain_graph -v
 
-    surfiamviz organisation -i data/sram_test_org.json -o test.html -c configs/graph_config.toml
+    surfiamviz organisation -i data/sram_test_org.json -o test.html -c configs/sram_config.toml
     surfiamviz organisation -o test.html -c configs/sram_config.toml --token TOKEN --server https://<server>
 
     surfiamviz stats -i data/sram_test_org.json
-    surfiamviz stats
-    surfiamviz download --server <server> --token <token>
+    surfiamviz stats --token TOKEN --server https://<server>s
+    surfiamviz download --download <json_file> --server <server> --token <token>
 """
 
 
