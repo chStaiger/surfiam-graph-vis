@@ -1,5 +1,4 @@
 [![Python package](https://github.com/chStaiger/surfiam-graph-vis/actions/workflows/linter.yml/badge.svg)](https://github.com/chStaiger/surfiam-graph-vis/actions/workflows/linter.yml)
-
 [![Python tests](https://github.com/chStaiger/surfiam-graph-vis/actions/workflows/pytest.yml/badge.svg)](https://github.com/chStaiger/surfiam-graph-vis/actions/workflows/pytest.yml)
 
 # surfiam-graph-vis
