@@ -94,7 +94,7 @@ def render_graph_from_json():
     """Render graph from the json export of an sram organisation."""
     parser = argparse.ArgumentParser(
         prog="surfiamviz organisation",
-        description="Render the graph of an SRAM organisation froman json export file.",
+        description="Render the graph of an SRAM organisation from a json export file.",
     )
     parser.add_argument(
         "-i",
