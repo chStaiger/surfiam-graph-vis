@@ -18,10 +18,10 @@ from surfiamviz.graph_from_config import (
 from surfiamviz.graph_from_sram_json import (
     get_nodes_from_dict,
     get_sram_org,
+    get_sram_url,
     nodes_to_graph,
     read_json,
     stats_dict,
-    get_sram_url,
 )
 from surfiamviz.utils import (
     color_edges,
@@ -115,7 +115,9 @@ def render_sram_graph():
         "-v", "--verbose", help="Verbose output.", action="store_true", default=False
     )
 
-    json_data = parser.add_argument_group(title="Render graph from a json export file for the organisation.")
+    json_data = parser.add_argument_group(
+        title="Render graph from a json export for the organisation."
+    )
     json_data.add_argument(
         "-i",
         "--input",
@@ -123,11 +125,11 @@ def render_sram_graph():
         type=Path,
     )
 
-    sram_connection = parser.add_argument_group(title="Connect to SRAM server with server name and token and render graph.")
+    sram_connection = parser.add_argument_group(
+        title="Connect to SRAM server with server name and token and render graph."
+    )
     sram_connection.add_argument(
-        "--server",
-        help="The name of the SRAM ionstance: test, acc or sram (production)",
-        type=str
+        "--server", help="The name of the SRAM ionstance: test, acc or sram (production)", type=str
     )
     sram_connection.add_argument(
         "--token",
@@ -237,7 +239,9 @@ def get_stats_from_json():
         prog="surfiamviz stats", description="Retrieve statistics from SRAM json file."
     )
 
-    json_data = parser.add_argument_group(title="Get statistics from a json export file for the organisation.")
+    json_data = parser.add_argument_group(
+        title="Get statistics from a json export file for the organisation."
+    )
     json_data.add_argument(
         "-i",
         "--input",
@@ -245,11 +249,11 @@ def get_stats_from_json():
         type=Path,
     )
 
-    sram_connection = parser.add_argument_group(title="Connect to SRAM server with server name and token and get statistcs.")
+    sram_connection = parser.add_argument_group(
+        title="Connect to SRAM server with server name and token and get statistcs."
+    )
     sram_connection.add_argument(
-        "--server",
-        help="The name of the SRAM ionstance: test, acc or sram (production)",
-        type=str
+        "--server", help="The name of the SRAM ionstance: test, acc or sram (production)", type=str
     )
     sram_connection.add_argument(
         "--token",
