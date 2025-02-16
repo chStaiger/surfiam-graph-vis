@@ -21,6 +21,7 @@ from surfiamviz.graph_from_sram_json import (
     nodes_to_graph,
     read_json,
     stats_dict,
+    get_sram_url,
 )
 from surfiamviz.utils import (
     color_edges,
@@ -76,7 +77,7 @@ def main() -> None:
 
     # find the subcommand in this module and run it!
     elif subcommand == "organisation":
-        render_graph_from_json()
+        render_sram_graph()
     elif subcommand == "graph":
         render_graph_from_config()
     elif subcommand == "stats":
@@ -90,18 +91,11 @@ def main() -> None:
         sys.exit(1)
 
 
-def render_graph_from_json():
+def render_sram_graph():
     """Render graph from the json export of an sram organisation."""
     parser = argparse.ArgumentParser(
         prog="surfiamviz organisation",
         description="Render the graph of an SRAM organisation from a json export file.",
-    )
-    parser.add_argument(
-        "-i",
-        "--input",
-        help="The path to the json file from an export of an SRAM organisation.",
-        type=Path,
-        required=False,
     )
     parser.add_argument(
         "-o",
@@ -120,17 +114,25 @@ def render_graph_from_json():
     parser.add_argument(
         "-v", "--verbose", help="Verbose output.", action="store_true", default=False
     )
-    parser.add_argument(
-        "--server",
-        help="The SRAM server, default: https://acc.sram.surf.nl",
-        type=str,
-        default="https://acc.sram.surf.nl",
+
+    json_data = parser.add_argument_group(title="Render graph from a json export file for the organisation.")
+    json_data.add_argument(
+        "-i",
+        "--input",
+        help="The path to the json file from an export of an SRAM organisation.",
+        type=Path,
     )
-    parser.add_argument(
+
+    sram_connection = parser.add_argument_group(title="Connect to SRAM server with server name and token and render graph.")
+    sram_connection.add_argument(
+        "--server",
+        help="The name of the SRAM ionstance: test, acc or sram (production)",
+        type=str
+    )
+    sram_connection.add_argument(
         "--token",
         help="API token to the SRAM server.",
         type=str,
-        required=False,
     )
 
     args = parser.parse_args()
@@ -235,24 +237,24 @@ def get_stats_from_json():
         prog="surfiamviz stats", description="Retrieve statistics from SRAM json file."
     )
 
-    parser.add_argument(
+    json_data = parser.add_argument_group(title="Get statistics from a json export file for the organisation.")
+    json_data.add_argument(
         "-i",
         "--input",
         help="The path to the json file from an export of an SRAM organisation.",
         type=Path,
-        required=False,
     )
-    parser.add_argument(
+
+    sram_connection = parser.add_argument_group(title="Connect to SRAM server with server name and token and get statistcs.")
+    sram_connection.add_argument(
         "--server",
-        help="The SRAM server, default: https://acc.sram.surf.nl",
-        type=str,
-        default="https://acc.sram.surf.nl",
+        help="The name of the SRAM ionstance: test, acc or sram (production)",
+        type=str
     )
-    parser.add_argument(
+    sram_connection.add_argument(
         "--token",
         help="API token to the SRAM server.",
         type=str,
-        required=False,
     )
 
     args = parser.parse_args()
@@ -349,10 +351,18 @@ def _parse_input_or_token(args: argparse.Namespace) -> dict:
             return None
 
     if args.token:
-        try:
-            sram_dict = get_sram_org(token=args.token, server=args.server)
-            return sram_dict
-        except requests.HTTPError as err:
-            print(repr(err))
+        if not args.server:
+            print("ERROR SRAM server: no server name given (test, acc or sram).")
+            return None
+        server = get_sram_url(args.server)
+        if server:
+            try:
+                sram_dict = get_sram_org(token=args.token, server=server)
+                return sram_dict
+            except requests.HTTPError as err:
+                print(repr(err))
+                return None
+        else:
+            print(f"Server {args.server} not known. Please choose from test, acc or sram.")
             return None
     return None

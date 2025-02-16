@@ -8,6 +8,22 @@ import networkx as nx
 import requests
 
 
+def get_sram_url(servername: str) -> str:
+    """Return the url of the sram server."""
+    sram = "https://sram.surf.nl/"
+    acc = "https://acc.sram.surf.nl"
+    test = "https://test.sram.surf.nl"
+
+    if servername.lower() == "sram":
+        return sram
+    elif servername.lower() == "acc":
+        return acc
+    elif servername.lower() == "test":
+        return test
+    else:
+        return None
+
+
 def get_sram_org(token: str, server: str = "https://acc.sram.surf.nl") -> dict:
     """Retrieve sram org json from API."""
     url = server + "/api/organisations/v1"
