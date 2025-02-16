@@ -16,12 +16,11 @@ def get_sram_url(servername: str) -> str:
 
     if servername.lower() == "sram":
         return sram
-    elif servername.lower() == "acc":
+    if servername.lower() == "acc":
         return acc
-    elif servername.lower() == "test":
+    if servername.lower() == "test":
         return test
-    else:
-        return None
+    return None
 
 
 def get_sram_org(token: str, server: str = "https://acc.sram.surf.nl") -> dict:
