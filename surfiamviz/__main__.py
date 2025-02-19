@@ -58,11 +58,11 @@ Example usage:
     surfiamviz graph -o test.html -c configs/sram_config.toml -g plain_graph -v
 
     surfiamviz organisation -i data/sram_test_org.json -o test.html -c configs/sram_config.toml
-    surfiamviz organisation -o test.html -c configs/sram_config.toml --token TOKEN --server https://<server>
+    surfiamviz organisation -o test.html -c configs/sram_config.toml --token TOKEN --server sram
 
     surfiamviz stats -i data/sram_test_org.json
-    surfiamviz stats --token TOKEN --server https://<server>s
-    surfiamviz download --download <json_file> --server <server> --token <token>
+    surfiamviz stats --token TOKEN --server sram
+    surfiamviz download --download <json_file> --server sram --token <token>
 """
 
 
@@ -278,9 +278,9 @@ def download_sram_org_json():
 
     parser.add_argument(
         "--server",
-        help="The SRAM server, default: https://acc.sram.surf.nl",
+        help="The name of the SRAM ionstance: test, acc or sram (production)",
         type=str,
-        default="https://acc.sram.surf.nl",
+        required=True,
     )
 
     parser.add_argument(
@@ -297,8 +297,9 @@ def download_sram_org_json():
     if not args.file.parent.is_dir():
         print(f"Cannot save json: {args.file.parent} does not exist.")
         sys.exit(1)
+    server = get_sram_url(args.server)
     try:
-        org = get_sram_org(token=args.token, server=args.server)
+        org = get_sram_org(token=args.token, server=server)
     except requests.HTTPError as err:
         print(repr(err))
         sys.exit(1)
