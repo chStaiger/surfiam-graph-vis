@@ -298,6 +298,9 @@ def download_sram_org_json():
         print(f"Cannot save json: {args.file.parent} does not exist.")
         sys.exit(1)
     server = get_sram_url(args.server)
+    if server is None:
+        print(f"SRAM instance {args.server} not known.")
+        sys.exit(1)
     try:
         org = get_sram_org(token=args.token, server=server)
     except requests.HTTPError as err:
