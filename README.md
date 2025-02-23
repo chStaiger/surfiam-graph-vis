@@ -38,6 +38,23 @@ surfiamviz
 # Configuration
 Standard graphs, node colours and edge colours can be submitted to the tool through a config file. We provide an [example config file](configs/sram_config.toml) to illustrate how node and edge type determine the colour and to show two standard example graphs for an SRAM collaboration.
 
+## Nodes 
+A graph consists of nodes and edges. An edge defines a connection between two nodes. 
+
+In the section `node_types` you will find a list of all defined nodes for all possible SRAM graphs/networks. Each node has a name and a level e.g. `ORG_ADMIN.name = "admin"` and `ORG_ADMIN.level`.
+
+The name groups nodes into functions or roles and gives them a common color as defined in the section `[node_colors]`. E.g. all nodes with the name `admin` will be plotted in green. 
+You can change those colours in the section `[node_colors]`. 
+If necessary you can also regroup those nodes by changing the labels and their respective counterpart in the colour section.
+
+The node level determines on which level in the graph hierarchy the nodes of the respective type will be plotted. For SRAM the `ORGANISATION` is the top level indicated by the smallest number and appears in the graphs always on left side of the plot.
+
+## Edges
+Similar to nodes we offer a section `[edge_colors]` to define the color of edges. All edge types are listed in this section too. You can extend that section. However, to add a new type of edge requires adjusting the code for the rendering of graphs coming from a real SRAM connection or json file.
+
+[!CAUTION]
+The node types and the edge types are also used to render graphs from actual SRAM json exports. You can add edge types, node types and you can change the node type names or levels. Do not delete any of the existing node or edge types.
+
 ## Configured SRAM graphs
 ### Adding a new graph section
 
@@ -67,13 +84,6 @@ entities.type = "BACKBONE"
 Of course you can define several edge sets of different types.
 
 The edge type, here "BACKBONE" is used in the section `[edge_colors]` to give all edges of the same type a color.
-
-### Nodes 
-Edges are defined between two nodes. In the section `node_types` you will find a list of all defined nodes for SRAM. Each node has a name and a level e.g. `ORG_ADMIN.name = "admin"` and `ORG_ADMIN.level`.
-
-The name again groups nodes and gives them a common color as defined in the section `[node_colors]`. E.g. all nodes with the name `admin` will be plotted in green.
-
-The node level determines on which level in the graph hierarchy the nodes of the respective type will be plotted. For SRAM the `ORGANISATION` is the top level indicated by the smallest number and appears in the graphs always on left side of the plot.
 
 ### Colours
 
