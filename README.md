@@ -52,8 +52,8 @@ The node level determines on which level in the graph hierarchy the nodes of the
 ## Edges
 Similar to nodes we offer a section `[edge_colors]` to define the color of edges. All edge types are listed in this section too. You can extend that section. However, to add a new type of edge requires adjusting the code for the rendering of graphs coming from a real SRAM connection or json file.
 
-[!CAUTION]
-The node types and the edge types are also used to render graphs from actual SRAM json exports. You can add edge types, node types and you can change the node type names or levels. Do not delete any of the existing node or edge types.
+> [!CAUTION]
+> The node types and the edge types are also used to render graphs from actual SRAM json exports. You can add edge types, node types and you can change the node type names or levels. Do not delete any of the existing node or edge types.
 
 ## Configured SRAM graphs
 ### Adding a new graph section
