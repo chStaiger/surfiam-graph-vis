@@ -92,7 +92,7 @@ def color_edges(graph: nx.MultiDiGraph, graph_config: dict):
         graph[edge[0]][edge[1]][edge[2]]["color"] = edge_color
 
 
-def infer_coll_app_edges(graph: nx.MultiDiGraph):
+def infer_coll_app_edges(graph: nx.MultiDiGraph, verbose):
     """Infer the relationship between an app and a collaboration.
 
     Whether a collaboration can be connected to an application depends on the organisation
@@ -126,19 +126,25 @@ def infer_coll_app_edges(graph: nx.MultiDiGraph):
         # collaboration -> unit -> organisation -> orgadmin
         shortest_path = nx.shortest_path(graph.to_undirected(), source=coll, target=org_adm)
         shortest_path_node_types = [graph.nodes.get(n)["node_type"] for n in shortest_path]
-        print(coll, org_adm, app, app_adm, shortest_path_node_types)
+        if verbose:
+            print(coll, org_adm, app, app_adm, shortest_path_node_types)
         if set(shortest_path_node_types).issubset(
             ["ORG_ADMIN", "COLLABORATION", "UNIT", "ORGANISATION"]
         ):
             if (coll, app_adm, app) in approved_by_app:
-                print("Approved:", coll, app_adm, app)
+                if verbose:
+                    print("Approved:", coll, app_adm, app)
                 if (app, org_adm) in approved_by_org:
-                    print("Approved:", app, org_adm)
+                    if verbose:
+                        print("Approved:", app, org_adm)
                     graph.add_edge(coll, app, edge_type="BACKBONE")
                 else:
-                    print("Not Approved:", app, org_adm)
+                    if verbose:
+                        print("Not Approved:", app, org_adm)
                     graph.add_edge(coll, app, edge_type="REJECT", label="reject by org")
             else:
-                print("Not Approved:", coll, app_adm, app)
+                if verbose:
+                    print("Not Approved:", coll, app_adm, app)
                 graph.add_edge(coll, app, edge_type="REJECT", label="reject by app")
-        print("------")
+        if verbose:
+            print("------")
