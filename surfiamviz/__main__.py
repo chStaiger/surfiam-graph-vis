@@ -26,6 +26,7 @@ from surfiamviz.graph_from_sram_json import (
 from surfiamviz.utils import (
     color_edges,
     color_nodes,
+    infer_coll_app_edges,
     read_graph_config,
     render_editable_network,
 )
@@ -229,6 +230,7 @@ def render_graph_from_config():
     set_node_type(graph, graph_config)
     set_node_levels_from_config(graph, graph_config)
     color_nodes(graph, graph_config)
+    infer_coll_app_edges(graph)
     color_edges(graph, graph_config)
     render_editable_network(graph, args.output.absolute(), args.verbose)
 

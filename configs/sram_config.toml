@@ -44,7 +44,7 @@ ACTIONS = "orange"
 TRUST = "purple"
 MEMBERS = "lightgray"
 BACKBONE = "black"
-REJECTIONS = "red"
+REJECT = "red"
 default = "lightblue"
 
 [app_graph]
@@ -67,13 +67,10 @@ actions.edges = [["ORG_ADMIN_1", "APPLICATION", "approves"],
                  ["ORG_ADMIN_2", "APPLICATION", "disapproves"],
                  ["APP_ADMIN", "COLLABORATION_2", "approves"],
                  ["APP_ADMIN", "COLLABORATION_1", "disapproves"],
+                 ["APP_ADMIN", "COLLABORATION_3", "approves"],
                 ]
 actions.type = "ACTIONS"
 
-reject.edges = [["COLLABORATION_1", "APPLICATION", "no access"],
-                ["COLLABORATION_3", "APPLICATION", "no access"],
-                ]
-reject.type = "REJECTIONS"
 
 [all_nodes_graph]
 
