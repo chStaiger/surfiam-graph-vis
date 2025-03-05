@@ -11,6 +11,8 @@ RESEARCHER.name = "user"
 RESEARCHER.level = 8
 CO_MEMBER.name = "user"
 CO_MEMBER.level = 8
+APP_ADMIN.name = "admin"
+APP_ADMIN.level = 10
 
 APPLICATION.name = "service"
 APPLICATION.level = 9
@@ -42,7 +44,36 @@ ACTIONS = "orange"
 TRUST = "purple"
 MEMBERS = "lightgray"
 BACKBONE = "black"
+REJECTIONS = "red"
 default = "lightblue"
+
+[app_graph]
+entities.edges = [["ORGANISATION_1", "COLLABORATION_1"],
+                  ["ORGANISATION_1", "COLLABORATION_2"],
+                  ["ORGANISATION_2", "COLLABORATION_3"],
+                  ["COLLABORATION_2", "APPLICATION"],
+                  ]
+entities.type = "BACKBONE"
+
+entity_role.edges = [["ORGANISATION_1", "ORG_ADMIN_1"],
+                     ["ORGANISATION_2", "ORG_ADMIN_2"],
+                     ["COLLABORATION_1", "COLL_ADMIN_1"],
+                     ["COLLABORATION_2", "COLL_ADMIN_2"],
+                     ["APPLICATION", "APP_ADMIN"]
+                     ]
+entity_role.type = "BACKBONE"
+
+actions.edges = [["ORG_ADMIN_1", "APPLICATION", "approves"],
+                 ["ORG_ADMIN_2", "APPLICATION", "disapproves"],
+                 ["APP_ADMIN", "COLLABORATION_2", "approves"],
+                 ["APP_ADMIN", "COLLABORATION_1", "disapproves"],
+                ]
+actions.type = "ACTIONS"
+
+reject.edges = [["COLLABORATION_1", "APPLICATION", "no access"],
+                ["COLLABORATION_3", "APPLICATION", "no access"],
+                ]
+reject.type = "REJECTIONS"
 
 [all_nodes_graph]
 
