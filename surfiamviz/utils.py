@@ -1,30 +1,31 @@
 """Utility functions to draw networks."""
 
 import itertools
-import os
 from pathlib import Path
-from pprint import pprint
 
+import gravis as gv
 import networkx as nx
 import tomllib
-import gravis as gv
 
-def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, debug: bool = False):
+
+def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
     """Save the graph as html file."""
     print(f"Rendering {html_path}:")
     # fix hierarchical positioning of nodes
     pos = nx.drawing.layout.multipartite_layout(graph, scale=300)
     for name, (x, y) in pos.items():
         node = graph.nodes[name]
-        node['x'] = x
-        node['y'] = y
+        node["x"] = x
+        node["y"] = y
 
-    fig = gv.d3(graph,
-                show_edge_label=True,
-                edge_label_data_source='label',
-                edge_curvature=0.3,
-                node_size_normalization_max=50,
-                layout_algorithm_active=False)
+    fig = gv.d3(
+        graph,
+        show_edge_label=True,
+        edge_label_data_source="label",
+        edge_curvature=0.3,
+        node_size_normalization_max=50,
+        layout_algorithm_active=False,
+    )
     fig.export_html(html_path)
 
 

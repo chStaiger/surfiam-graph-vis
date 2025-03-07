@@ -154,7 +154,7 @@ def render_sram_graph():
     set_node_levels_from_config(graph, graph_config)
     color_nodes(graph, graph_config)
     color_edges(graph, graph_config)
-    render_editable_network(graph, args.output.absolute(), args.verbose)
+    render_editable_network(graph, args.output.absolute())
 
 
 def list_config_graphs():
@@ -233,7 +233,7 @@ def render_graph_from_config():
     print("--> Infer collaboration-aplication relationships.")
     infer_coll_app_edges(graph, args.verbose)
     color_edges(graph, graph_config)
-    render_editable_network(graph, args.output.absolute(), args.verbose)
+    render_editable_network(graph, args.output.absolute())
 
 
 def get_stats_from_json():
