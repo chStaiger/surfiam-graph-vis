@@ -24,7 +24,7 @@ classifiers = [
 
 dependencies = [
     "networkx",
-    "pyvis",
+    "gravis",
     "requests"
 ]
 
