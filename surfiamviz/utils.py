@@ -8,7 +8,7 @@ from pprint import pprint
 import networkx as nx
 import tomllib
 from pyvis.network import Network
-
+import gravis as gv
 
 def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, debug: bool = False):
     """Save the graph as html file."""
@@ -29,14 +29,25 @@ def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, debug: bool
                 }
             }
     }""")
-    nt.from_nx(graph)
-    if debug:
-        pprint(nt.edges)
-        pprint(nt.nodes)
+    #nt.from_nx(graph)
+    #if debug:
+    #    pprint(nt.edges)
+    #    pprint(nt.nodes)
     print(f"Rendering {html_path}:")
-    nt.show(html_path.name, notebook=False)
+    #nt.show(html_path.name, notebook=False)
+    pos = nx.drawing.layout.multipartite_layout(graph, scale=300)
+    for name, (x, y) in pos.items():
+        node = graph.nodes[name]
+        node['x'] = x
+        node['y'] = y
+
+    fig = gv.d3(graph,
+                show_edge_label=True,
+                edge_label_data_source='label',
+                edge_curvature=0.4, layout_algorithm_active=False)
+    fig.export_html(html_path)
     # no option to geive a full path to nt.show or nt.save_graph
-    os.replace(Path(os.getcwd()) / html_path.name, html_path)
+    #os.replace(Path(os.getcwd()) / html_path.name, html_path)
 
 
 def read_graph_config(config_path: Path) -> dict:
