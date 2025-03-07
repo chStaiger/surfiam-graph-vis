@@ -121,16 +121,25 @@ def infer_coll_app_edges(graph: nx.MultiDiGraph, verbose):
     ]
 
     for coll, org_adm, app, app_adm in itertools.product(colls, org_adms, apps, app_adms):
-        # a collaboration belongs to an org_admin if the shortest path may only contain
+        # a collaboration belongs to an org_admin if there exists a path which only contains
         # collaboration -> organisation -> orgadmin
         # collaboration -> unit -> organisation -> orgadmin
-        shortest_path = nx.shortest_path(graph.to_undirected(), source=coll, target=org_adm)
-        shortest_path_node_types = [graph.nodes.get(n)["node_type"] for n in shortest_path]
+        paths = [
+            sorted(["COLLABORATION", "ORGANISATION", "ORG_ADMIN"]),
+            sorted(["COLLABORATION", "ORGANISATION", "ORG_ADMIN", "UNIT"]),
+        ]
+
+        all_paths = nx.all_simple_paths(graph.to_undirected(), coll, org_adm)
+        valid_paths = []
+        for path in all_paths:
+            node_types = [graph.nodes.get(n)["node_type"] for n in path]
+            if sorted(node_types) in paths:
+                valid_paths.append(path)
         if verbose:
-            print(coll, org_adm, app, app_adm, shortest_path_node_types)
-        if set(shortest_path_node_types).issubset(
-            ["ORG_ADMIN", "COLLABORATION", "UNIT", "ORGANISATION"]
-        ):
+            print(coll, org_adm, app, app_adm, "valid paths: ", valid_paths)
+        if len(valid_paths) > 0:
+            # we choose >0 since there might also be trust and other action edges
+            # which results in multiple paths, we are also working with multigraphs here.
             if (coll, app_adm, app) in approved_by_app:
                 if verbose:
                     print("Approved:", coll, app_adm, app)

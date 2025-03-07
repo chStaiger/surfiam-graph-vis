@@ -49,7 +49,8 @@ default = "lightblue"
 
 [app_graph]
 entities.edges = [["ORGANISATION_1", "COLLABORATION_1"],
-                  ["ORGANISATION_1", "COLLABORATION_2"],
+                  ["ORGANISATION_1", "UNIT"],
+                  ["UNIT", "COLLABORATION_2"],
                   ["ORGANISATION_2", "COLLABORATION_3"],
                   ["COLLABORATION_2", "APPLICATION"],
                   ]
