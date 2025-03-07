@@ -43,6 +43,7 @@ def set_node_levels_from_config(graph: nx.MultiDiGraph, graph_config: dict):
                 ntype = node_attrs["node_type"]
                 lvl = graph_config["node_types"][ntype]["level"]
                 graph.add_node(node, level=lvl)
+                graph.add_node(node, subset=lvl)
             else:
                 print(f"WARNING {node} is not labeled with its node_type. Cannot set level.")
 

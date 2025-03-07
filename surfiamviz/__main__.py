@@ -26,6 +26,7 @@ from surfiamviz.graph_from_sram_json import (
 from surfiamviz.utils import (
     color_edges,
     color_nodes,
+    infer_coll_app_edges,
     read_graph_config,
     render_editable_network,
 )
@@ -153,7 +154,7 @@ def render_sram_graph():
     set_node_levels_from_config(graph, graph_config)
     color_nodes(graph, graph_config)
     color_edges(graph, graph_config)
-    render_editable_network(graph, args.output.absolute(), args.verbose)
+    render_editable_network(graph, args.output.absolute())
 
 
 def list_config_graphs():
@@ -229,8 +230,10 @@ def render_graph_from_config():
     set_node_type(graph, graph_config)
     set_node_levels_from_config(graph, graph_config)
     color_nodes(graph, graph_config)
+    print("--> Infer collaboration-aplication relationships.")
+    infer_coll_app_edges(graph, args.verbose)
     color_edges(graph, graph_config)
-    render_editable_network(graph, args.output.absolute(), args.verbose)
+    render_editable_network(graph, args.output.absolute())
 
 
 def get_stats_from_json():
@@ -332,6 +335,8 @@ def _parse_output(args: argparse.Namespace):
         confirm = input(f"Overwrite {args.output.absolute()} [Yes(ENTER)/No(Any key)]?")
         if confirm != "":
             sys.exit(234)
+        else:
+            args.output.unlink()
     else:
         print(f"Saving graph as {args.output.absolute()}.")
 
