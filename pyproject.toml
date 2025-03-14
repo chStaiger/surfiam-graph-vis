@@ -25,6 +25,7 @@ classifiers = [
 dependencies = [
     "networkx",
     "gravis",
+    "numpy",
     "requests"
 ]
 
