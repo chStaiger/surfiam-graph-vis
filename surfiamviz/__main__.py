@@ -175,7 +175,7 @@ def list_config_graphs():
 
     example_graphs = import_example_graph(args.input)
     print("Availabel graphs:")
-    print("\n".join([s for s in example_graphs]))
+    print("\n".join(list(example_graphs)))
 
 
 def render_graph_from_config():
