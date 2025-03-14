@@ -11,6 +11,7 @@ import networkx as nx
 import requests
 
 from surfiamviz.graph_from_config import (
+    import_example_graph,
     add_graph_edges_from_config,
     set_node_levels_from_config,
     set_node_type,
@@ -55,8 +56,8 @@ Available subcommands:
 
 Example usage:
 
-    surfiamviz list -c configs/sram_config.toml
-    surfiamviz graph -o test.html -c configs/sram_config.toml -g plain_graph -v
+    surfiamviz list -i example_graphs/sram_examples.toml
+    surfiamviz graph -o test.html -c configs/sram_config.toml -i example_graphs/sram_examples.toml -g plain_graph -v
 
     surfiamviz organisation -i data/sram_test_org.json -o test.html -c configs/sram_config.toml
     surfiamviz organisation -o test.html -c configs/sram_config.toml --token TOKEN --server sram
@@ -164,18 +165,17 @@ def list_config_graphs():
         description="List the names of the graph sections from the configuration file.",
     )
     parser.add_argument(
-        "-c",
-        "--config",
-        help="Configuration file defining node, edge types and the graph(s).",
+        "-i",
+        "--input",
+        help="A file formatted in toml which contains the graph(s).",
         type=Path,
-        required=True,
+        required=True
     )
     args = parser.parse_args()
 
-    graph_config = _parse_config(args)
-    preset_sections = ["node_colors", "node_types", "edge_colors"]
+    example_graphs = import_example_graph(args.input)
     print("Availabel graphs:")
-    print("\n".join([s for s in graph_config if s not in preset_sections]))
+    print("\n".join([s for s in example_graphs]))
 
 
 def render_graph_from_config():
@@ -199,6 +199,13 @@ def render_graph_from_config():
         required=True,
     )
     parser.add_argument(
+        "-i",
+        "--input",
+        help="A file formatted in toml which contains the graph(s).",
+        type=Path,
+        required=True
+    )
+    parser.add_argument(
         "-g",
         "--graph",
         help="the name of the section in the config file which defines the edges of the graph.",
@@ -212,21 +219,24 @@ def render_graph_from_config():
     args = parser.parse_args()
 
     graph_config = _parse_config(args)
+    example_graphs = import_example_graph(args.input)
     if args.verbose:
         print("Configuration:")
         pprint.pprint(graph_config)
+        print("Available graphs:")
+        pprint.pprint(example_graphs)
 
-    if args.graph not in graph_config:
+    if args.graph not in example_graphs:
         print(f"Graph {args.graph} not defined in {args.config.absolute()}. Exit.")
         sys.exit(234)
     if args.verbose:
         print(f"Rendering {args.graph}")
-        pprint.pprint(graph_config[args.graph])
+        pprint.pprint(example_graphs[args.graph])
 
     _parse_output(args)
 
     graph = nx.MultiDiGraph()
-    add_graph_edges_from_config(graph, graph_config, args.graph)
+    add_graph_edges_from_config(graph, example_graphs, args.graph)
     set_node_type(graph, graph_config)
     set_node_levels_from_config(graph, graph_config)
     color_nodes(graph, graph_config)
