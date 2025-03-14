@@ -13,7 +13,7 @@ def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
     print(f"Rendering {html_path}:")
 
     # fix hierarchical positioning of node
-    max_deg = max([deg for _, deg in graph.to_undirected().degree])
+    max_deg = max(deg for _, deg in graph.to_undirected().degree)
     scaling = 300 + len(graph.nodes()) * max_deg
 
     pos = nx.drawing.layout.multipartite_layout(graph, scale=scaling)
@@ -23,7 +23,7 @@ def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
         node["y"] = y
 
     deg_centrality = dict(graph.to_undirected().degree)
-    [graph.add_node(node, size=25 + deg_centrality[node]) for node in graph.nodes()]
+    _ = [graph.add_node(node, size=25 + deg_centrality[node]) for node in graph.nodes()]
 
     fig = gv.vis(
         graph,
