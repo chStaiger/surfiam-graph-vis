@@ -2,7 +2,6 @@
 
 import itertools
 from pathlib import Path
-import math
 
 import gravis as gv
 import networkx as nx
@@ -12,10 +11,11 @@ import tomllib
 def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
     """Save the graph as html file."""
     print(f"Rendering {html_path}:")
+
     # fix hierarchical positioning of node
     max_deg = max([deg for _, deg in graph.to_undirected().degree])
-    scaling = 300 + len(graph.nodes())*max_deg
-    print(scaling)
+    scaling = 300 + len(graph.nodes()) * max_deg
+
     pos = nx.drawing.layout.multipartite_layout(graph, scale=scaling)
     for name, (x, y) in pos.items():
         node = graph.nodes[name]
@@ -23,7 +23,7 @@ def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
         node["y"] = y
 
     deg_centrality = dict(graph.to_undirected().degree)
-    [graph.add_node(node, size=10+deg_centrality[node]) for node in graph.nodes()]
+    [graph.add_node(node, size=25 + deg_centrality[node]) for node in graph.nodes()]
 
     fig = gv.vis(
         graph,
@@ -31,7 +31,7 @@ def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
         edge_label_data_source="label",
         edge_curvature=0.3,
         use_node_size_normalization=False,
-        node_size_data_source='size',
+        node_size_data_source="size",
         layout_algorithm_active=False,
         show_details=True,
     )

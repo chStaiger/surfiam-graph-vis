@@ -11,8 +11,8 @@ import networkx as nx
 import requests
 
 from surfiamviz.graph_from_config import (
-    import_example_graph,
     add_graph_edges_from_config,
+    import_example_graph,
     set_node_levels_from_config,
     set_node_type,
 )
@@ -169,7 +169,7 @@ def list_config_graphs():
         "--input",
         help="A file formatted in toml which contains the graph(s).",
         type=Path,
-        required=True
+        required=True,
     )
     args = parser.parse_args()
 
@@ -203,7 +203,7 @@ def render_graph_from_config():
         "--input",
         help="A file formatted in toml which contains the graph(s).",
         type=Path,
-        required=True
+        required=True,
     )
     parser.add_argument(
         "-g",

@@ -1,8 +1,10 @@
 """Utility functions to draw networks."""
 
+from pathlib import Path
+
 import networkx as nx
 import tomllib
-from pathlib import Path
+
 
 def import_example_graph(input_file: Path) -> dict:
     """Read the file containing the example graphs."""
