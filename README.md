@@ -17,6 +17,8 @@ pip install git+https://github.com/chStaiger/surfiam-graph-vis.git@<branch>
 
 ## Checkout code and install python package
 
+### Installation with pip
+
 ```
 # HTTP
 git clone https://github.com/chStaiger/surfiam-graph-vis.git
@@ -27,12 +29,33 @@ cd surfiam-graph-vis
 pip install -e .
 ```
 
+### Installation with uv
+
+```
+# HTTP
+git clone https://github.com/chStaiger/surfiam-graph-vis.git
+# SSH
+git clone git@github.com:chStaiger/surfiam-graph-vis.git
+
+cd surfiam-graph-vis
+uv build
+```
+
 
 # Usage
 
 To run the main script simply type in the terminal:
+
+- Pip package
+
 ```
 surfiamviz
+```
+
+- Uv package
+
+```
+uv run surfiamviz
 ```
 
 # Configuration
