@@ -18,14 +18,14 @@ from surfiamviz.utils import (
     color_edges,
     color_nodes,
     render_editable_network,
+    subgraph,
 )
 
 
-def _write_graph_to_file(g):
-    if Path("gravis_html/streamlit_graph.html").exists():
-        Path("gravis_html/streamlit_graph.html").unlink()
-    render_editable_network(g, "gravis_html/streamlit_graph.html")
-    return g
+def _write_graph_to_file(g, filename="gravis_html/streamlit_graph.html", scaling="True"):
+    if Path(filename).exists():
+        Path(filename).unlink()
+    render_editable_network(g, filename, scaling)
 
 
 @st.cache_data
@@ -38,26 +38,65 @@ def _load_graph(g_config, s_dict):
     return g
 
 
+if "clicked" not in st.session_state:
+    st.session_state.clicked = False
+
+if "start" not in st.session_state:
+    st.session_state.start = False
+
+
+def _click_button():
+    st.session_state.clicked = True
+
+
+def _start_session():
+    st.session_state.start = True
+
+
+# layout
+col1, col2, col3 = st.columns([1, 1, 1])
+
+# init
+sel_edges = []
+sel_nodes = []
+
 # Add a file uploader and downloader to the sidebar
 upload_config = st.sidebar.file_uploader("Configuiration file", type=["toml"])
 upload_sram_org = st.sidebar.file_uploader("SRAM organisation json", type=["json"])
+start = st.sidebar.button("Start", on_click=_start_session)
 
-if upload_config is not None and upload_sram_org is not None:
-    stringio = upload_config.getvalue().decode("utf-8")
-    graph_config = tomllib.loads(str(stringio))
-    stringio = upload_sram_org.getvalue().decode("utf-8")
-    sram_dict = json.loads(stringio)
+if st.session_state.start:
+    if upload_config is not None and upload_sram_org is not None:
+        stringio = upload_config.getvalue().decode("utf-8")
+        graph_config = tomllib.loads(str(stringio))
+        # selection buttons
+        stringio = upload_sram_org.getvalue().decode("utf-8")
+        sram_dict = json.loads(stringio)
 
-    graph = _load_graph(graph_config, sram_dict)
-    _write_graph_to_file(graph)
-    with open("gravis_html/streamlit_graph.html", "r", encoding="utf-8") as HtmlFile:
-        components.html(HtmlFile.read(), height=435)
+        graph = _load_graph(graph_config, sram_dict)
+        _write_graph_to_file(graph)
+        with open("gravis_html/streamlit_graph.html", "r", encoding="utf-8") as HtmlFile:
+            components.html(HtmlFile.read(), height=435)
 
-    with open("gravis_html/streamlit_graph.html", "rb") as buff:
-        st.download_button(
-            label="Download graph as HTML",
-            data=buff,
-            file_name="surfiam_network.html",
-            mime="text/html",
-            icon=":material/download:",
-        )
+        with open("gravis_html/streamlit_graph.html", "rb") as buff:
+            st.download_button(
+                label="Download graph as HTML",
+                data=buff,
+                file_name="surfiam_network.html",
+                mime="text/html",
+                icon=":material/download:",
+            )
+
+        with col1:
+            sel_edges = st.multiselect("Select Edges", graph_config["edge_colors"].keys())
+        with col2:
+            sel_nodes = st.multiselect("Select Nodes", graph_config["node_types"].keys())
+        with col3:
+            st.button("Render", on_click=_click_button)
+
+    if st.session_state.clicked:
+        sg = subgraph(graph, sel_edges, sel_nodes)
+        st.write(sg.nodes)
+        _write_graph_to_file(sg, "gravis_html/subgraph.html", scaling=False)
+        with open("gravis_html/subgraph.html", "r", encoding="utf-8") as HtmlFile:
+            components.html(HtmlFile.read(), height=435)

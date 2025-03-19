@@ -8,9 +8,10 @@ import networkx as nx
 import tomllib
 
 
-def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
+def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, scaling=True):
     """Save the graph as html file."""
     print(f"Rendering {html_path}:")
+    print(scaling)
 
     # fix hierarchical positioning of node
     max_deg = max(deg for _, deg in graph.to_undirected().degree)
@@ -22,8 +23,10 @@ def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
         node["x"] = x
         node["y"] = y
 
-    deg_centrality = dict(graph.to_undirected().degree)
-    _ = [graph.add_node(node, size=25 + deg_centrality[node]) for node in graph.nodes()]
+    if scaling is True:
+        print("blabla")
+        deg_centrality = dict(graph.to_undirected().degree)
+        _ = [graph.add_node(node, size=25 + deg_centrality[node]) for node in graph.nodes()]
 
     fig = gv.vis(
         graph,
@@ -36,7 +39,6 @@ def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
         show_details=True,
     )
     fig.export_html(html_path)
-
 
 def read_graph_config(config_path: Path) -> dict:
     """Read config file."""
@@ -156,3 +158,18 @@ def infer_coll_app_edges(graph: nx.MultiDiGraph, verbose):
                 graph.add_edge(coll, app, edge_type="REJECT", label="reject by app")
         if verbose:
             print("------")
+
+def subgraph(graph: nx.MultiDiGraph, edge_types: list, node_types: list) -> nx.MultiDiGraph:
+    """Define a subgraph by node_types and edge_types."""
+    selected_nodes = []
+    for node in graph.nodes():
+        node_attrs = graph.nodes.get(node)
+        if "node_type" in node_attrs and node_attrs["node_type"] in node_types:
+            selected_nodes.append(node)
+    selected_edges = []
+    for edge in graph.edges:
+        if "edge_type" in graph[edge[0]][edge[1]][edge[2]] and graph[edge[0]][edge[1]][edge[2]]["edge_type"] in edge_types:
+            selected_edges.append(edge)
+    subgraph = graph.subgraph(selected_nodes)
+    return subgraph
+            
