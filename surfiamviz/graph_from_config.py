@@ -1,6 +1,16 @@
 """Utility functions to draw networks."""
 
+from pathlib import Path
+
 import networkx as nx
+import tomllib
+
+
+def import_example_graph(input_file: Path) -> dict:
+    """Read the file containing the example graphs."""
+    with open(input_file, "rb") as f:
+        example_graphs = tomllib.load(f)
+    return example_graphs
 
 
 def set_node_type(graph: nx.MultiDiGraph, graph_config: dict):
@@ -48,9 +58,9 @@ def set_node_levels_from_config(graph: nx.MultiDiGraph, graph_config: dict):
                 print(f"WARNING {node} is not labeled with its node_type. Cannot set level.")
 
 
-def add_graph_edges_from_config(graph: nx.MultiDiGraph, graph_config: dict, section: str):
+def add_graph_edges_from_config(graph: nx.MultiDiGraph, example_graphs: dict, section: str):
     """Add the edges from a graph section in the config file."""
-    for _, edge_set in graph_config[section].items():
+    for _, edge_set in example_graphs[section].items():
         etype = edge_set["type"]
         for edge in edge_set["edges"]:
             if len(edge) == 2:
