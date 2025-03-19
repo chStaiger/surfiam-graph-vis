@@ -11,7 +11,6 @@ import tomllib
 def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, scaling=True):
     """Save the graph as html file."""
     print(f"Rendering {html_path}:")
-    print(scaling)
 
     # fix hierarchical positioning of node
     max_deg = max(deg for _, deg in graph.to_undirected().degree)

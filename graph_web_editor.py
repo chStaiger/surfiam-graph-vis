@@ -38,15 +38,8 @@ def _load_graph(g_config, s_dict):
     return g
 
 
-if "clicked" not in st.session_state:
-    st.session_state.clicked = False
-
 if "start" not in st.session_state:
     st.session_state.start = False
-
-
-def _click_button():
-    st.session_state.clicked = True
 
 
 def _start_session():
@@ -86,15 +79,15 @@ if st.session_state.start:
                 mime="text/html",
                 icon=":material/download:",
             )
-
+        form = st.form(key="Select subgraph")
         with col1:
-            sel_edges = st.multiselect("Select Edges", graph_config["edge_colors"].keys())
+            sel_edges = form.multiselect("Select Edges", graph_config["edge_colors"].keys())
         with col2:
-            sel_nodes = st.multiselect("Select Nodes", graph_config["node_types"].keys())
+            sel_nodes = form.multiselect("Select Nodes", graph_config["node_types"].keys())
         with col3:
-            st.button("Render", on_click=_click_button)
+            submit_subgraph = form.form_submit_button("Render")
 
-    if st.session_state.clicked:
+    if submit_subgraph:
         sg = subgraph(graph, sel_edges, sel_nodes)
         st.write(sg.nodes)
         _write_graph_to_file(sg, "gravis_html/subgraph.html", scaling=False)
