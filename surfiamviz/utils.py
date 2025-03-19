@@ -8,7 +8,7 @@ import networkx as nx
 import tomllib
 
 
-def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, scaling=True):
+def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, scale_nodes=True):
     """Save the graph as html file."""
     print(f"Rendering {html_path}:")
 
@@ -21,8 +21,8 @@ def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, scaling=Tru
         node = graph.nodes[name]
         node["x"] = x
         node["y"] = y
-
-    if scaling is True:
+    print(scale_nodes)
+    if scale_nodes is True:
         print("blabla")
         deg_centrality = dict(graph.to_undirected().degree)
         _ = [graph.add_node(node, size=25 + deg_centrality[node]) for node in graph.nodes()]

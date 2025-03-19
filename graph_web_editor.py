@@ -22,20 +22,21 @@ from surfiamviz.utils import (
 )
 
 
-def _write_graph_to_file(g, filename="gravis_html/streamlit_graph.html", scaling="True"):
+def _write_graph_to_file(g, filename="gravis_html/streamlit_graph.html", scaling=True):
     if Path(filename).exists():
         Path(filename).unlink()
     render_editable_network(g, filename, scaling)
 
 
-@st.cache_data
 def _load_graph(g_config, s_dict):
     nodes = get_nodes_from_dict(s_dict)
     g = nodes_to_graph(nodes)
+    return g
+
+def _set_attributes(g, g_config, s_dict):
     set_node_levels_from_config(g, g_config)
     color_nodes(g, g_config)
     color_edges(g, g_config)
-    return g
 
 
 if "start" not in st.session_state:
@@ -67,6 +68,7 @@ if st.session_state.start:
         sram_dict = json.loads(stringio)
 
         graph = _load_graph(graph_config, sram_dict)
+        _set_attributes(graph, graph_config, sram_dict)
         _write_graph_to_file(graph)
         with open("gravis_html/streamlit_graph.html", "r", encoding="utf-8") as HtmlFile:
             components.html(HtmlFile.read(), height=435)
