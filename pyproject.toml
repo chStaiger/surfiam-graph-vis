@@ -26,7 +26,8 @@ dependencies = [
     "networkx",
     "gravis",
     "numpy",
-    "requests"
+    "requests",
+    "streamlit>=1.43.2",
 ]
 
 dynamic = ["version"]
