@@ -108,6 +108,7 @@ def get_nodes_from_dict(sram_org_dict: dict) -> list:
 
     nodes.append(colls)
     nodes.append(users)
+    print(nodes)
     return nodes
 
 
@@ -196,18 +197,19 @@ def add_collaborations(graph: nx.MultiGraph, collabs: dict, org: str):
 
 def add_users(graph: nx.MultiGraph, users: dict):
     """Add users from node_set."""
-    # add al user nodes
+    # add all user nodes
     for user, u_dict in users.items():
+        print(user, u_dict.keys())
         graph.add_node(
             user,
             color_group="admin" if len(u_dict["admin_of"]) > 0 else "user",
-            label=u_dict["label"],
+            label=u_dict.get("label", user),
             node_type="COLL_ADMIN" if len(u_dict["admin_of"]) > 0 else "CO_MEMBER",
         )
 
     # add action edges between users (admin, member) and collaborations
     for user, u_dict in users.items():
-        if u_dict["created_by"] in graph:
+        if "created_by" in u_dict and u_dict["created_by"] in graph:
             graph.add_edge(u_dict["created_by"], user, label="invite", edge_type="ACTIONS")
         for item in u_dict["admin_of"]:
             graph.add_edge(user, item, edge_type="BACKBONE")
