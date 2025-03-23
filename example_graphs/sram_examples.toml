@@ -17,6 +17,8 @@ actions.edges = [["ORG_ADMIN", "APPLICATION", "approves"],
                  ["APP_ADMIN", "COLLABORATION_1", "disapproves"]
                 ]
 actions.type = "ACTIONS"
+explanation = "The organisation admin approves an application to be used by all collaborations. If the application admin also accpets that a collaboration uses the app, all members of the collaboration have access to the application."
+
 
 [app_graph_org_denies]
 entities.edges = [
@@ -34,7 +36,7 @@ actions.edges = [["ORG_ADMIN", "APPLICATION", "disapproves"],
                  ["APP_ADMIN", "COLLABORATION", "approves"],
                 ]
 actions.type = "ACTIONS"
-
+explanation = "The organisation admin does not approve an application to be used by any collaboration. Even if the application admin accpets that a collaboration uses the app, none of the members of the collaboration have access to the application."
 
 
 [all_nodes_graph]
@@ -88,6 +90,8 @@ actions.edges = [["ORG_MANAGER", "COLLABORATION_1", "create"],
                 ]
 actions.type = "ACTIONS"
 
+explanation = "A graph that shows all of the implemented node types and edges types."
+
 [plain_graph]
 
 entities.edges = [["ORGANISATION", "COLLABORATION"]]
@@ -112,3 +116,5 @@ actions.edges = [["ORG_MANAGER", "COLLABORATION", "create"],
                  ["COLL_ADMIN", "RESEARCHER_2", "invite"]
                 ]
 actions.type = "ACTIONS"
+
+explanation = "An easy understandable graph showing the most important concepts."

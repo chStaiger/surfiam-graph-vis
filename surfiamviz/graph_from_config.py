@@ -60,7 +60,8 @@ def set_node_levels_from_config(graph: nx.MultiDiGraph, graph_config: dict):
 
 def add_graph_edges_from_config(graph: nx.MultiDiGraph, example_graphs: dict, section: str):
     """Add the edges from a graph section in the config file."""
-    for _, edge_set in example_graphs[section].items():
+    edge_sets = [example_graphs[section][key] for key in example_graphs[section] if key != "explanation"]
+    for edge_set in edge_sets:
         etype = edge_set["type"]
         for edge in edge_set["edges"]:
             if len(edge) == 2:

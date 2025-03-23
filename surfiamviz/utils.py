@@ -21,9 +21,8 @@ def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, scale_nodes
         node = graph.nodes[name]
         node["x"] = x
         node["y"] = y
-    print(scale_nodes)
+
     if scale_nodes is True:
-        print("blabla")
         deg_centrality = dict(graph.to_undirected().degree)
         _ = [graph.add_node(node, size=25 + deg_centrality[node]) for node in graph.nodes()]
 
@@ -171,4 +170,3 @@ def subgraph(graph: nx.MultiDiGraph, edge_types: list, node_types: list) -> nx.M
             selected_edges.append(edge)
     subgraph = graph.subgraph(selected_nodes)
     return subgraph
-            
