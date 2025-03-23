@@ -38,6 +38,7 @@ def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, scale_nodes
     )
     fig.export_html(html_path)
 
+
 def read_graph_config(config_path: Path) -> dict:
     """Read config file."""
     with open(config_path, "rb") as f:
@@ -68,9 +69,7 @@ def color_nodes(graph: nx.MultiDiGraph, graph_config: dict):
             color_group = node_attrs.get("color_group", "default")
         elif "node_type" in node_attrs:
             if node_attrs["node_type"] in graph_config["node_types"]:
-                color_group = graph_config["node_types"][node_attrs["node_type"]].get(
-                    "name", "default"
-                )
+                color_group = graph_config["node_types"][node_attrs["node_type"]].get("name", "default")
             else:
                 color_group = "default"
         else:
@@ -157,6 +156,7 @@ def infer_coll_app_edges(graph: nx.MultiDiGraph, verbose):
         if verbose:
             print("------")
 
+
 def subgraph(graph: nx.MultiDiGraph, edge_types: list, node_types: list) -> nx.MultiDiGraph:
     """Define a subgraph by node_types and edge_types."""
     selected_nodes = []
@@ -166,7 +166,10 @@ def subgraph(graph: nx.MultiDiGraph, edge_types: list, node_types: list) -> nx.M
             selected_nodes.append(node)
     selected_edges = []
     for edge in graph.edges:
-        if "edge_type" in graph[edge[0]][edge[1]][edge[2]] and graph[edge[0]][edge[1]][edge[2]]["edge_type"] in edge_types:
+        if (
+            "edge_type" in graph[edge[0]][edge[1]][edge[2]]
+            and graph[edge[0]][edge[1]][edge[2]]["edge_type"] in edge_types
+        ):
             selected_edges.append(edge)
     subgraph = graph.subgraph(selected_nodes)
     return subgraph

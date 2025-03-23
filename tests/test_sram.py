@@ -10,9 +10,7 @@ def test_get_nodes_from_dict(sram):
     assert nodes[0] == {"node_name": "FederFlow", "label": "federflow"}
     assert nodes[1] == ["Implementation Guidance", "Network Insights", "Strategy & Optimization"]
     for entry in nodes[2]:
-        assert set(["node_name", "label", "edges_from", "services", "groups", "users"]).issubset(
-            entry.keys()
-        )
+        assert set(["node_name", "label", "edges_from", "services", "groups", "users"]).issubset(entry.keys())
     for entry in nodes[3]:
         assert set(["admin_of", "create", "label", "created_by"]).issubset(nodes[3][entry].keys())
 
