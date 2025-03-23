@@ -171,5 +171,4 @@ def subgraph(graph: nx.MultiDiGraph, edge_types: list, node_types: list) -> nx.M
             and graph[edge[0]][edge[1]][edge[2]]["edge_type"] in edge_types
         ):
             selected_edges.append(edge)
-    subgraph = graph.subgraph(selected_nodes)
-    return subgraph
+    return graph.subgraph(selected_nodes)

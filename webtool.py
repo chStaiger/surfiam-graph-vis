@@ -29,7 +29,7 @@ from surfiamviz.utils import (
 )
 
 
-def _load_graph(g_config, s_dict):
+def _load_graph(s_dict):
     nodes = get_nodes_from_dict(s_dict)
     g = nodes_to_graph(nodes)
     return g
@@ -120,7 +120,7 @@ def explore():
         st.write("Please provide information.")
 
     if sram_dict:
-        sram_graph = _load_graph(graph_config, sram_dict)
+        sram_graph = _load_graph(sram_dict)
         _set_attributes(sram_graph, graph_config)
         _write_graph_to_file(sram_graph)
         with open("gravis_html/streamlit_graph.html", "r", encoding="utf-8") as htmlfile:
@@ -139,7 +139,7 @@ def explore():
                 _write_graph_to_file(sg, "gravis_html/subgraph.html", scaling=False)
                 with open("gravis_html/subgraph.html", "r", encoding="utf-8") as htmlfile:
                     components.html(htmlfile.read(), height=435)
-            except ValueError as err:
+            except ValueError:
                 st.write(f"Graph does not contain nodes of type {sel_nodes}.")
 
         st.header("Statistics of the Organisation")

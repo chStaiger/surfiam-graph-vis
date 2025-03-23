@@ -76,7 +76,7 @@ disable=["E0611", "E0401", "E0401", "E1101", "C0411",
 [tool.pylint.'MESSAGES CONTROL']
 disable="too-many-positional-arguments"
 
-max-line-length=100
+max-line-length=110
 max-locals=35
 max-args=10
 
