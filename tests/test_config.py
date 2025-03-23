@@ -22,15 +22,11 @@ def test_add_graph_edges_from_config(config):
         if edge[0] in ["ORGANISATION", "COLLABORATION"]:
             assert graph.get_edge_data(edge[0], edge[1]) == {0: {"edge_type": "BACKBONE"}}
         elif edge[0] == "ORG_MANAGER":
-            assert graph.get_edge_data(edge[0], edge[1]) == {
-                0: {"edge_type": "ACTIONS", "label": "create"}
-            }
+            assert graph.get_edge_data(edge[0], edge[1]) == {0: {"edge_type": "ACTIONS", "label": "create"}}
         elif edge[1] == "COLLABORATION":
             assert graph.get_edge_data(edge[0], edge[1]) == {0: {"edge_type": "MEMBERS"}}
         elif edge[0] == "COLL_ADMIN" and edge[1] == "RESEARCHER":
-            assert graph.get_edge_data(edge[0], edge[1]) == {
-                0: {"edge_type": "ACTIONS", "label": "invite"}
-            }
+            assert graph.get_edge_data(edge[0], edge[1]) == {0: {"edge_type": "ACTIONS", "label": "invite"}}
         # print(edge[0], edge[1], graph.get_edge_data(edge[0], edge[1]))
 
 

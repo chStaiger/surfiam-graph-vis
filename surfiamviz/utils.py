@@ -8,7 +8,7 @@ import networkx as nx
 import tomllib
 
 
-def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
+def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, scale_nodes=True):
     """Save the graph as html file."""
     print(f"Rendering {html_path}:")
 
@@ -22,8 +22,9 @@ def render_editable_network(graph: nx.MultiDiGraph, html_path: Path):
         node["x"] = x
         node["y"] = y
 
-    deg_centrality = dict(graph.to_undirected().degree)
-    _ = [graph.add_node(node, size=25 + deg_centrality[node]) for node in graph.nodes()]
+    if scale_nodes is True:
+        deg_centrality = dict(graph.to_undirected().degree)
+        _ = [graph.add_node(node, size=25 + deg_centrality[node]) for node in graph.nodes()]
 
     fig = gv.vis(
         graph,
@@ -68,9 +69,7 @@ def color_nodes(graph: nx.MultiDiGraph, graph_config: dict):
             color_group = node_attrs.get("color_group", "default")
         elif "node_type" in node_attrs:
             if node_attrs["node_type"] in graph_config["node_types"]:
-                color_group = graph_config["node_types"][node_attrs["node_type"]].get(
-                    "name", "default"
-                )
+                color_group = graph_config["node_types"][node_attrs["node_type"]].get("name", "default")
             else:
                 color_group = "default"
         else:
@@ -156,3 +155,20 @@ def infer_coll_app_edges(graph: nx.MultiDiGraph, verbose):
                 graph.add_edge(coll, app, edge_type="REJECT", label="reject by app")
         if verbose:
             print("------")
+
+
+def subgraph(graph: nx.MultiDiGraph, edge_types: list, node_types: list) -> nx.MultiDiGraph:
+    """Define a subgraph by node_types and edge_types."""
+    selected_nodes = []
+    for node in graph.nodes():
+        node_attrs = graph.nodes.get(node)
+        if "node_type" in node_attrs and node_attrs["node_type"] in node_types:
+            selected_nodes.append(node)
+    selected_edges = []
+    for edge in graph.edges:
+        if (
+            "edge_type" in graph[edge[0]][edge[1]][edge[2]]
+            and graph[edge[0]][edge[1]][edge[2]]["edge_type"] in edge_types
+        ):
+            selected_edges.append(edge)
+    return graph.subgraph(selected_nodes)
