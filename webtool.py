@@ -50,7 +50,7 @@ def _write_graph_to_file(g, filename="gravis_html/streamlit_graph.html", scaling
 
 def welcome():
     """Welcome tab."""
-    st.title("Welcome to SURF's Idenity and Access management tools.")
+    st.title("Welcome to SURF's Identity and Access management tools.")
     st.markdown("""
                 This app aims to help you to understand SURF's IAM tools.
                 We offer:
