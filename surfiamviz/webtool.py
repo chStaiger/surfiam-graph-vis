@@ -1,6 +1,5 @@
 """Webtool to explore and interact with surf iam graphs."""
 
-
 import streamlit as st
 
 from surfiamviz.webutils.createtab import create
