@@ -238,7 +238,7 @@ def stats_dict(nodes: list) -> dict:
         coll_dict = [c for c in nodes[2] if c["node_name"] == coll][0]
         stats["collaborations"][coll]["users"] = len(coll_dict["users"])
         stats["collaborations"][coll]["groups"] = len(coll_dict["groups"])
-        stats["collaborations"][coll]["admins"] = len(
-            [u for u in nodes[3] if coll in nodes[3][u]["admin_of"]])
+        stats["collaborations"][coll]["admins"] = len([u for u in nodes[3]
+                                                        if coll in nodes[3][u]["admin_of"]])
 
     return json.dumps(stats, indent=4)
