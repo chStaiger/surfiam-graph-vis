@@ -33,6 +33,7 @@ def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, scale_nodes
         edge_curvature=0.3,
         use_node_size_normalization=False,
         node_size_data_source="size",
+        node_label_data_source='label',
         layout_algorithm_active=False,
         show_details=True,
     )
@@ -164,11 +165,16 @@ def subgraph(graph: nx.MultiDiGraph, edge_types: list, node_types: list) -> nx.M
         node_attrs = graph.nodes.get(node)
         if "node_type" in node_attrs and node_attrs["node_type"] in node_types:
             selected_nodes.append(node)
-    selected_edges = []
+    unselect_edges = []
     for edge in graph.edges:
         if (
             "edge_type" in graph[edge[0]][edge[1]][edge[2]]
-            and graph[edge[0]][edge[1]][edge[2]]["edge_type"] in edge_types
+            and graph[edge[0]][edge[1]][edge[2]]["edge_type"] not in edge_types
         ):
-            selected_edges.append(edge)
-    return graph.subgraph(selected_nodes)
+            unselect_edges.append(edge)
+    g = graph.copy()
+    if len(edge_types) > 0:
+        g.remove_edges_from(unselect_edges)
+    if node_types == []:
+        return g
+    return g.subgraph(selected_nodes)
