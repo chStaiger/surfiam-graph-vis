@@ -61,16 +61,17 @@ Available subcommands:
         List all available graphs from the configuration file.
 
 Example usage:
+
     surfiamviz webtool
 
     surfiamviz list -i example_graphs/sram_examples.toml
     surfiamviz graph -o test.html -c configs/sram_config.toml -i example_graphs/sram_examples.toml -g plain_graph -v
 
     surfiamviz organisation -i data/sram_test_org.json -o test.html -c configs/sram_config.toml
-    surfiamviz organisation -o test.html -c configs/sram_config.toml --token TOKEN --server sram
+    surfiamviz organisation -o test.html -c configs/sram_config.toml --token <token> --server sram
 
     surfiamviz stats -i data/sram_test_org.json
-    surfiamviz stats --token TOKEN --server sram
+    surfiamviz stats --token <token> --server sram
     surfiamviz download --download <json_file> --server sram --token <token>
 """
 
