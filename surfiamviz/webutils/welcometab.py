@@ -3,6 +3,7 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
+repo_root = Path(os.path.realpath(__file__)).parent.parent.parent
 
 def welcome():
     """Welcome."""
@@ -18,5 +19,5 @@ def welcome():
 
                 - To create your own SRAM graph.
             """)
-    with open("webutils/all_nodes.html", "r", encoding="utf-8") as htmlfile:
+    with open(repo_root / "surfiamviz/webutils/all_nodes.html", "r", encoding="utf-8") as htmlfile:
         components.html(htmlfile.read(), height=435)
