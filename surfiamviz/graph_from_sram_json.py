@@ -108,7 +108,6 @@ def get_nodes_from_dict(sram_org_dict: dict) -> list:
 
     nodes.append(colls)
     nodes.append(users)
-    print(nodes)
     return nodes
 
 
@@ -199,7 +198,6 @@ def add_users(graph: nx.MultiGraph, users: dict):
     """Add users from node_set."""
     # add all user nodes
     for user, u_dict in users.items():
-        print(user, u_dict.keys())
         graph.add_node(
             user,
             color_group="admin" if len(u_dict["admin_of"]) > 0 else "user",
