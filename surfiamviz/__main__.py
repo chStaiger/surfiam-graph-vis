@@ -3,7 +3,9 @@
 
 import argparse
 import json
+import os
 import pprint
+import subprocess
 import sys
 from pathlib import Path
 
@@ -43,6 +45,10 @@ SRAM graph visualisation version {version("surfiamviz")}
 Usage: surfiamviz [subcommand] [options]
 
 Available subcommands:
+    webtool
+        Start a webtool to explore graphs and statistics in a browser GUI.
+        This will only work when you cloned the repository and you start the app in the
+        root directory of this repository.
     organisation
         Generate the graph representation of the export to json of an SRAM organisation.
     graph
@@ -55,6 +61,7 @@ Available subcommands:
         List all available graphs from the configuration file.
 
 Example usage:
+    surfiamviz webtool
 
     surfiamviz list -i example_graphs/sram_examples.toml
     surfiamviz graph -o test.html -c configs/sram_config.toml -i example_graphs/sram_examples.toml -g plain_graph -v
@@ -88,9 +95,18 @@ def main() -> None:
         download_sram_org_json()
     elif subcommand == "list":
         list_config_graphs()
+    elif subcommand == "webtool":
+        start_webtool()
     else:
         print(f"Invalid subcommand ({subcommand}). For help see surfiamviz --help")
         sys.exit(1)
+
+
+def start_webtool():
+    """Start the app in a web browser."""
+    print("Starting webtool. Stop in shell with Ctrl-c.")
+    file_path = Path(os.path.realpath(__file__))
+    subprocess.run(["streamlit", "run", file_path.parent / "webtool.py"])
 
 
 def render_sram_graph():
@@ -242,11 +258,9 @@ def render_graph_from_config():
 
 def get_stats_from_json():
     """Get statistics of an SRAM organisation."""
-    parser = argparse.ArgumentParser(prog="surfiamviz stats",
-                                     description="Retrieve statistics from SRAM json file.")
+    parser = argparse.ArgumentParser(prog="surfiamviz stats", description="Retrieve statistics from SRAM json file.")
 
-    json_data = parser.add_argument_group(
-                    title="Get statistics from a json export file for the organisation.")
+    json_data = parser.add_argument_group(title="Get statistics from a json export file for the organisation.")
     json_data.add_argument(
         "-i",
         "--input",
@@ -277,8 +291,7 @@ def get_stats_from_json():
 
 def download_sram_org_json():
     """Save the sram organisation json."""
-    parser = argparse.ArgumentParser(prog="surfiamviz download",
-                                     description="Download the SRAM organisation json.")
+    parser = argparse.ArgumentParser(prog="surfiamviz download", description="Download the SRAM organisation json.")
 
     parser.add_argument(
         "--server",
@@ -293,10 +306,7 @@ def download_sram_org_json():
         type=str,
         required=True,
     )
-    parser.add_argument(
-        "--file",
-        help="The path and filename to save the json file.",
-        type=Path, required=True)
+    parser.add_argument("--file", help="The path and filename to save the json file.", type=Path, required=True)
 
     args = parser.parse_args()
     if not args.file.parent.is_dir():
