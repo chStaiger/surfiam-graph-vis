@@ -32,7 +32,7 @@ def _input():
     api_key = col1.text_input("SRAM API key", type="password")
     sram_instance = col2.selectbox("SRAM instance", ("acc", "sram", "test"))
     sram_form.write("Or provide an exported SRAM file (json):")
-    upload_sram_org = col1.file_uploader("SRAM organisation json", type=["json"])
+    upload_sram_org = sram_form.file_uploader("SRAM organisation json", type=["json"])
     plotting_option = sram_form.selectbox("Choose the plotting type:", ["bipartite", "greedy", "louvain"])
     sram_form.form_submit_button("Render")
     return config_option, api_key, sram_instance, upload_sram_org, plotting_option
