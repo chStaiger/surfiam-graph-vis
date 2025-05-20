@@ -1,6 +1,7 @@
 """Utility functions to draw networks."""
 
 import itertools
+import warnings
 from pathlib import Path
 
 import gravis as gv
@@ -8,23 +9,25 @@ import networkx as nx
 import tomllib
 
 
-def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, scale_nodes=True):
+def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, plot_type: str = "greedy"):
     """Save the graph as html file."""
     print(f"Rendering {html_path}:")
 
-    # fix hierarchical positioning of node
     max_deg = max(deg for _, deg in graph.to_undirected().degree)
     scaling = 300 + len(graph.nodes()) * max_deg
-
-    pos = nx.drawing.layout.multipartite_layout(graph, scale=scaling)
-    for name, (x, y) in pos.items():
-        node = graph.nodes[name]
-        node["x"] = x
-        node["y"] = y
-
-    if scale_nodes is True:
+    if plot_type == "bipartite":
+        # fix hierarchical positioning of node
+        pos = nx.drawing.layout.multipartite_layout(graph, scale=scaling)
+        for name, (x, y) in pos.items():
+            node = graph.nodes[name]
+            node["x"] = x
+            node["y"] = y
+        # scale nodes
         deg_centrality = dict(graph.to_undirected().degree)
         _ = [graph.add_node(node, size=25 + deg_centrality[node]) for node in graph.nodes()]
+    else:
+        print(f"Community {plot_type}.")
+        community_layout(graph, scaling, plot_type)
 
     fig = gv.vis(
         graph,
@@ -33,11 +36,39 @@ def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, scale_nodes
         edge_curvature=0.3,
         use_node_size_normalization=False,
         node_size_data_source="size",
-        node_label_data_source='label',
+        node_label_data_source="label",
         layout_algorithm_active=False,
         show_details=True,
     )
     fig.export_html(html_path)
+
+
+def community_layout(graph: nx.MultiDiGraph, scaling: int, alg: str = "greedy") -> list:
+    """Determine the community layout."""
+    if alg == "greedy":
+        communities = nx.community.greedy_modularity_communities(graph)
+    elif alg == "louvain":
+        communities = nx.community.louvain_communities(graph)
+    else:
+        warnings.warn(
+            f"Plotting type {alg} not known. Generate network without specific positioning.")
+        return graph
+
+    print(type(communities))
+
+    supergraph = nx.cycle_graph(len(communities))
+    superpos = nx.spring_layout(supergraph, scale=scaling / 2, seed=429)
+    centers = list(superpos.values())
+
+    pos = {}
+    for center, comm in zip(centers, communities):
+        pos.update(nx.spring_layout(nx.subgraph(graph, comm), center=center, scale=scaling / 2, seed=1430))
+    for name, (x, y) in pos.items():
+        node = graph.nodes[name]
+        node["x"] = x
+        node["y"] = y
+
+    return graph
 
 
 def read_graph_config(config_path: Path) -> dict:

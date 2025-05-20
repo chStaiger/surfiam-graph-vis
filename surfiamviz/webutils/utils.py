@@ -30,7 +30,7 @@ def _set_attributes(g, g_config):
     color_edges(g, g_config)
 
 
-def _write_graph_to_file(g, filename="gravis_html/streamlit_graph.html", scaling=True):
+def _write_graph_to_file(g, filename="gravis_html/streamlit_graph.html", plot_type=None):
     if Path(filename).exists():
         Path(filename).unlink()
-    render_editable_network(g, filename, scaling)
+    render_editable_network(g, filename, plot_type)

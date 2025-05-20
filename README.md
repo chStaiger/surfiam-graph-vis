@@ -4,6 +4,7 @@
 Python code to visualise preconfigured SRAM graphs, SRAM json exports of an organisation and getting statistics from such a json.
 
 # Dependencies
+- Python 3.11 or higher
 - networkx
 - pyvis
 
@@ -56,6 +57,14 @@ surfiamviz
 
 ```
 uv run surfiamviz
+```
+
+To run the web tool use:
+
+```
+surfiamviz webtool
+#or
+uv run surfiamviz webtool
 ```
 
 # Configuration

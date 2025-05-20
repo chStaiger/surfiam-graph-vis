@@ -27,14 +27,15 @@ def _input():
     config_path = repo_root / "configs"
     config_files = [x for x in config_path.glob("**/*") if x.is_file() and x.suffix == ".toml"]
     config_option = sram_form.selectbox("Choose a graph configuration:", config_files)
-    sram_form.write("Provide an exported SRAM file of your organisation or an API token:")
-    col1, col2, col3, col4 = sram_form.columns([5, 1, 2, 2])
-    upload_sram_org = col1.file_uploader("SRAM organisation json", type=["json"])
-    col2.write("or")
-    api_key = col3.text_input("SRAM API key", type="password")
-    sram_instance = col4.selectbox("SRAM instance", ("acc", "sram", "test"))
+    sram_form.write("Provide API token:")
+    col1, col2 = sram_form.columns([2, 2])
+    api_key = col1.text_input("SRAM API key", type="password")
+    sram_instance = col2.selectbox("SRAM instance", ("acc", "sram", "test"))
+    sram_form.write("Or provide an exported SRAM file (json):")
+    upload_sram_org = sram_form.file_uploader("SRAM organisation json", type=["json"])
+    plotting_option = sram_form.selectbox("Choose the plotting type:", ["bipartite", "greedy", "louvain"])
     sram_form.form_submit_button("Render")
-    return config_option, api_key, sram_instance, upload_sram_org
+    return config_option, api_key, sram_instance, upload_sram_org, plotting_option
 
 
 def _stats(sram_dict):
@@ -57,7 +58,7 @@ def explore():
     """Load sram graphs and explore tab."""
     sram_dict = None
     st.title("Explore your own SRAM organisation.")
-    config_option, api_key, sram_instance, upload_sram_org = _input()
+    config_option, api_key, sram_instance, upload_sram_org, plot = _input()
     if config_option:
         graph_config = read_graph_config(Path(config_option))
     else:
@@ -74,7 +75,7 @@ def explore():
     if sram_dict:
         sram_graph = _load_graph(sram_dict)
         _set_attributes(sram_graph, graph_config)
-        _write_graph_to_file(sram_graph, filename=repo_root / "gravis_html/streamlit_graph.html")
+        _write_graph_to_file(sram_graph, filename=repo_root / "gravis_html/streamlit_graph.html", plot_type=plot)
         with open(repo_root / "gravis_html/streamlit_graph.html", "r", encoding="utf-8") as htmlfile:
             components.html(htmlfile.read(), height=435)
 
@@ -83,7 +84,7 @@ def explore():
         if submit_subgraph:
             try:
                 sg = subgraph(sram_graph, sel_edges, sel_nodes)
-                _write_graph_to_file(sg, repo_root / "gravis_html/subgraph.html", scaling=False)
+                _write_graph_to_file(sg, repo_root / "gravis_html/subgraph.html")
                 with open(repo_root / "gravis_html/subgraph.html", "r", encoding="utf-8") as htmlfile:
                     components.html(htmlfile.read(), height=435)
             except ValueError:
