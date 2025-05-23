@@ -43,7 +43,7 @@ def examples():
         _set_attributes(ex_graph, graph_config)
         infer_coll_app_edges(ex_graph, True)
         color_edges(ex_graph, graph_config)
-        _write_graph_to_file(ex_graph, filename=repo_root / "gravis_html/example.html", scaling=True)
+        _write_graph_to_file(ex_graph, filename=repo_root / "gravis_html/example.html")
         with open(repo_root / "gravis_html/example.html", "r", encoding="utf-8") as htmlfile:
             components.html(htmlfile.read(), height=435)
         st.write(example_graphs[option]["explanation"])
