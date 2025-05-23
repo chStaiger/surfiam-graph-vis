@@ -24,18 +24,21 @@ repo_root = Path(os.path.realpath(__file__)).parent.parent.parent
 
 def _input():
     sram_form = st.form(key="sram_graph")
+    sram_form.markdown("#### 1) Choose configuration for nodes and edges.")
     config_path = repo_root / "configs"
     config_files = [x for x in config_path.glob("**/*") if x.is_file() and x.suffix == ".toml"]
     config_option = sram_form.selectbox("Choose a graph configuration:", config_files)
-    sram_form.write("Provide API token:")
+    sram_form.markdown("#### 2a) Provide the API token for your Organisation and choose the SRAM instance.")
     col1, col2 = sram_form.columns([2, 2])
     api_key = col1.text_input("SRAM API key", type="password")
     sram_instance = col2.selectbox("SRAM instance", ("acc", "sram", "test"))
-    sram_form.write("Or provide an exported SRAM file (json):")
+    download = sram_form.checkbox("Download json file", value=False)
+    sram_form.markdown("#### 2b) Or provide an exported SRAM file (json):")
     upload_sram_org = sram_form.file_uploader("SRAM organisation json", type=["json"])
+    sram_form.markdown("#### 3) Choose the layout of the network:")
     plotting_option = sram_form.selectbox("Choose the plotting type:", ["bipartite", "greedy", "louvain"])
-    sram_form.form_submit_button("Render")
-    return config_option, api_key, sram_instance, upload_sram_org, plotting_option
+    sram_form.form_submit_button("**Render**", icon=":material/thumb_up:")
+    return config_option, api_key, sram_instance, upload_sram_org, plotting_option, download
 
 
 def _stats(sram_dict):
@@ -58,7 +61,7 @@ def explore():
     """Load sram graphs and explore tab."""
     sram_dict = None
     st.title("Explore your own SRAM organisation.")
-    config_option, api_key, sram_instance, upload_sram_org, plot = _input()
+    config_option, api_key, sram_instance, upload_sram_org, plot, download = _input()
     if config_option:
         graph_config = read_graph_config(Path(config_option))
     else:
@@ -66,6 +69,10 @@ def explore():
     if api_key and sram_instance:
         server_url = get_sram_url(sram_instance)
         sram_dict = get_sram_org(api_key, server=server_url)
+        if download:
+            download_path = Path("~").expanduser() / "Downloads" / "sram_org.json"
+            with open(download_path, "w", encoding="utf-8") as fp:
+                json.dump(sram_dict, fp, indent=4)
     elif upload_sram_org:
         stringio = upload_sram_org.getvalue().decode("utf-8")
         sram_dict = json.loads(stringio)
