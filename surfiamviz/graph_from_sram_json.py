@@ -67,6 +67,8 @@ def get_nodes_from_dict(sram_org_dict: dict) -> list:
          {"label": str, "created_by": str, "role": str, "create": list[str], "admin_of": list}
 
     """
+    print(sram_org_dict)
+    print("=========END=======")
     nodes: list[Any] = []
     org = {"node_name": sram_org_dict["name"]}
     org["label"] = sram_org_dict["short_name"]
@@ -82,7 +84,7 @@ def get_nodes_from_dict(sram_org_dict: dict) -> list:
         users[entry["created_by"]]["create"].append(entry["name"])
 
         coll = {"node_name": entry["name"]}
-        coll["label"] = entry["short_name"]
+        coll["label"] = entry["name"]
         coll["edges_from"] = entry["units"]
         coll["services"] = []
         for service in entry["services"]:
@@ -154,7 +156,7 @@ def add_units(graph: nx.MultiGraph, units: list, org: str):
     Also sets the correct color_group and node_type attributes.
     """
     for unit in units:
-        graph.add_node(unit, node_type="UNIT")
+        graph.add_node(unit, node_type="UNIT", label = unit)
         graph.add_edge(org, unit, edge_type="BACKBONE")
 
 
@@ -176,7 +178,7 @@ def add_collaborations(graph: nx.MultiGraph, collabs: dict, org: str):
         else:
             graph.add_edge(org, coll["node_name"])
         for service in coll["services"]:
-            graph.add_node(service, color_group="service", node_type="APPLICATION")
+            graph.add_node(service, color_group="service", label = service, node_type="APPLICATION")
             graph.add_edge(coll["node_name"], service, edge_type="BACKBONE")
         for group in coll["groups"]:
             graph.add_node(
