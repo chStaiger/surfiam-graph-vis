@@ -50,8 +50,7 @@ def community_layout(graph: nx.MultiDiGraph, scaling: int, alg: str = "greedy") 
     elif alg == "louvain":
         communities = nx.community.louvain_communities(graph)
     else:
-        warnings.warn(
-            f"Plotting type {alg} not known. Generate network without specific positioning.")
+        warnings.warn(f"Plotting type {alg} not known. Generate network without specific positioning.")
         return graph
 
     print(type(communities))
