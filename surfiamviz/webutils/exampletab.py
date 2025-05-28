@@ -28,11 +28,14 @@ def examples():
     if not example_file.is_file():
         st.write("Please make sure you downloaded the examples to example_graphs/sram_examples.toml.")
     example_graphs = import_example_graph(example_file)
-    option = st.selectbox(
+    form = st.form(key="examples")
+    option = form.selectbox(
         "Choose a graph:",
         example_graphs.keys(),
         index=None,
     )
+    plotting_option = form.selectbox("Choose the plotting type:", ["bipartite", "greedy    ", "louvain"])
+    form.form_submit_button("**Render**", icon=":material/thumb_up:")
     config_file = repo_root / "configs/sram_config.toml"
     if not config_file.is_file():
         st.write("Please make sure you downloaded the config file to configs/sram_config.toml.")
@@ -43,7 +46,10 @@ def examples():
         _set_attributes(ex_graph, graph_config)
         infer_coll_app_edges(ex_graph, True)
         color_edges(ex_graph, graph_config)
-        _write_graph_to_file(ex_graph, filename=repo_root / "gravis_html/example.html")
+        if plotting_option:
+            _write_graph_to_file(ex_graph, filename=repo_root / "gravis_html/example.html", plot_type=plotting_option)
+        else:
+            _write_graph_to_file(ex_graph, filename=repo_root / "gravis_html/example.html")
         with open(repo_root / "gravis_html/example.html", "r", encoding="utf-8") as htmlfile:
             components.html(htmlfile.read(), height=435)
         st.write(example_graphs[option]["explanation"])
