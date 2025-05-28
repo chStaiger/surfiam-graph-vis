@@ -26,7 +26,6 @@ def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, plot_type: 
         deg_centrality = dict(graph.to_undirected().degree)
         _ = [graph.add_node(node, size=25 + deg_centrality[node]) for node in graph.nodes()]
     else:
-        print(f"Community {plot_type}.")
         community_layout(graph, scaling, plot_type)
 
     fig = gv.vis(

@@ -35,7 +35,8 @@ def set_node_type(graph: nx.MultiDiGraph, graph_config: dict):
                 ntype = res[0]
             else:
                 ntype = res[0]
-            graph.add_node(node, node_type=ntype)
+            # add also the label to the node, same as node id
+            graph.add_node(node, label = node, node_type=ntype)
 
 
 def set_node_levels_from_config(graph: nx.MultiDiGraph, graph_config: dict):
