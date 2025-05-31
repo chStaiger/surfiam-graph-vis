@@ -1,0 +1,67 @@
+[node_types]
+ORG_ADMIN.name = "admin"
+ORG_ADMIN.level = 2
+ORG_MANAGER.name = "role"
+ORG_MANAGER.level = 2
+U_MANAGER.name = "role"
+U_MANAGER.level = 4
+COLL_ADMIN.name = "admin"
+COLL_ADMIN.level = 6
+RESEARCHER.name = "user"
+RESEARCHER.level = 8
+CO_MEMBER.name = "user"
+CO_MEMBER.level = 8
+
+APPLICATION.name = "service"
+APPLICATION.level = 9
+COLLABORATION.name = "collaboration"
+COLLABORATION.level = 5
+ORGANISATION.name = "organisation"
+ORGANISATION.level = 1
+UNIT.name = "unit"
+UNIT.level = 3
+CO_GROUP.name = "group"
+CO_GROUP.level = 7
+APP_GROUP.name = "group"
+APP_GROUP.level = 7
+
+[node_colors]
+role = "orange"
+unit = "gray"
+organisation = "gray"
+collaboration = "gray"
+group = "darkorange"
+service = "blue"
+user = "purple"
+admin = "green"
+entity = "gray"
+default = "lightblue"
+
+[edge_colors]
+ACTIONS = "orange"
+TRUST = "purple"
+MEMBERS = "lightgray"
+BACKBONE = "black"
+default = "lightblue"
+
+[graph]
+
+entities.edges = [["ORGANISATION", "COLLABORATION"]]
+entities.type = "BACKBONE"
+
+entity_role.edges = [["ORGANISATION", "ORG_ADMIN"],
+                     ["ORGANISATION", "ORG_MANAGER"],
+                     ["COLLABORATION", "RESEARCHER"],
+                     ["COLLABORATION", "COLL_ADMIN"]
+                    ]
+entity_role.type = "BACKBONE"
+
+members.edges = [["RESEARCHER", "COLLABORATION"],
+                 ["COLL_ADMIN", "COLLABORATION"],
+                ]
+members.type = "MEMBERS"
+
+actions.edges = [["ORG_MANAGER", "COLLABORATION", "create"],
+                 ["COLL_ADMIN", "RESEARCHER", "invite"]
+                ]
+actions.type = "ACTIONS"

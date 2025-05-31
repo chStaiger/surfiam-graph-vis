@@ -35,8 +35,9 @@ def test_set_node_type(config):
 
     set_node_type(graph, config)
     for node in graph:
-        assert graph.nodes.get(node) == {"node_type": node}
-        # print(node, graph.nodes.get(node))
+        print(node, graph.nodes.get(node))
+        node_data = graph.nodes.get(node)
+        assert node_data["node_type"] == node
 
 
 def test_set_node_levels_from_config(config):
