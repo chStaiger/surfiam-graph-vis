@@ -271,7 +271,8 @@ def render_graph_from_config():
 
 def get_stats_from_json():
     """Get statistics of an SRAM organisation."""
-    parser = argparse.ArgumentParser(prog="surfiamviz stats", description="Retrieve statistics from SRAM json file.")
+    parser = argparse.ArgumentParser(prog="surfiamviz stats",
+                                     description="Retrieve statistics from SRAM json file.")
 
     json_data = parser.add_argument_group(title="Get statistics for an organisation.")
     json_data.add_argument(
@@ -304,7 +305,8 @@ def get_stats_from_json():
 
 def download_sram_org_json():
     """Save the sram organisation json."""
-    parser = argparse.ArgumentParser(prog="surfiamviz download", description="Download the SRAM organisation json.")
+    parser = argparse.ArgumentParser(prog="surfiamviz download",
+                                     description="Download the SRAM organisation json.")
 
     parser.add_argument(
         "--server",
@@ -319,7 +321,10 @@ def download_sram_org_json():
         type=str,
         required=True,
     )
-    parser.add_argument("--file", help="The path and filename to save the json file.", type=Path, required=True)
+    parser.add_argument("--file",
+                        help="The path and filename to save the json file.",
+                        type=Path,
+                        required=True)
 
     args = parser.parse_args()
     if not args.file.parent.is_dir():
