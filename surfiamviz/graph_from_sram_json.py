@@ -67,8 +67,6 @@ def get_nodes_from_dict(sram_org_dict: dict) -> list:
          {"label": str, "created_by": str, "role": str, "create": list[str], "admin_of": list}
 
     """
-    print(sram_org_dict)
-    print("=========END=======")
     nodes: list[Any] = []
     org = {"node_name": sram_org_dict["name"]}
     org["label"] = sram_org_dict["short_name"]
@@ -156,7 +154,7 @@ def add_units(graph: nx.MultiGraph, units: list, org: str):
     Also sets the correct color_group and node_type attributes.
     """
     for unit in units:
-        graph.add_node(unit, node_type="UNIT", label = unit)
+        graph.add_node(unit, node_type="UNIT", label=unit)
         graph.add_edge(org, unit, edge_type="BACKBONE")
 
 
@@ -178,7 +176,7 @@ def add_collaborations(graph: nx.MultiGraph, collabs: dict, org: str):
         else:
             graph.add_edge(org, coll["node_name"])
         for service in coll["services"]:
-            graph.add_node(service, color_group="service", label = service, node_type="APPLICATION")
+            graph.add_node(service, color_group="service", label=service, node_type="APPLICATION")
             graph.add_edge(coll["node_name"], service, edge_type="BACKBONE")
         for group in coll["groups"]:
             graph.add_node(
@@ -238,8 +236,7 @@ def stats_dict(nodes: list) -> dict:
         coll_dict = [c for c in nodes[2] if c["node_name"] == coll][0]
         stats["collaborations"][coll]["users"] = len(coll_dict["users"])
         stats["collaborations"][coll]["groups"] = len(coll_dict["groups"])
-        stats["collaborations"][coll]["admins"] = len(
-            [u for u in nodes[3] if coll in nodes[3][u]["admin_of"]]
-        )
+        stats["collaborations"][coll]["admins"] = len([u for u in nodes[3]
+                                                            if coll in nodes[3][u]["admin_of"]])
 
     return json.dumps(stats, indent=4)

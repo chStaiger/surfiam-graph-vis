@@ -105,9 +105,9 @@ entity_role.edges = [["ORGANISATION", "ORG_ADMIN"],
                     ]
 entity_role.type = "BACKBONE"
 
-members.edges = [["RESEARCHER_1", "COLLABORATION"],
-                 ["RESEARCHER_2", "COLLABORATION"],
-                 ["COLL_ADMIN", "COLLABORATION"],
+members.edges = [["RESEARCHER_1", "COLLABORATION", "member_of"],
+                 ["RESEARCHER_2", "COLLABORATION", "member_of"],
+                 ["COLL_ADMIN", "COLLABORATION", "member_of"],
                 ]
 members.type = "MEMBERS"
 

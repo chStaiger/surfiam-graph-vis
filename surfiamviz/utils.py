@@ -26,7 +26,6 @@ def render_editable_network(graph: nx.MultiDiGraph, html_path: Path, plot_type: 
         deg_centrality = dict(graph.to_undirected().degree)
         _ = [graph.add_node(node, size=25 + deg_centrality[node]) for node in graph.nodes()]
     else:
-        print(f"Community {plot_type}.")
         community_layout(graph, scaling, plot_type)
 
     fig = gv.vis(
@@ -50,8 +49,7 @@ def community_layout(graph: nx.MultiDiGraph, scaling: int, alg: str = "greedy") 
     elif alg == "louvain":
         communities = nx.community.louvain_communities(graph)
     else:
-        warnings.warn(
-            f"Plotting type {alg} not known. Generate network without specific positioning.")
+        warnings.warn(f"Plotting type {alg} not known. Generate network without specific positioning.")
         return graph
 
     print(type(communities))

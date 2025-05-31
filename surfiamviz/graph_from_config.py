@@ -22,6 +22,7 @@ def set_node_type(graph: nx.MultiDiGraph, graph_config: dict):
     by mapping each of the defined node_types as a prefix to the node.
     The first one that matches defines the node type.
     """
+    # the available node types
     config_node_types = graph_config["node_types"].keys()
     for node in graph.nodes():
         if "node_type" not in graph.nodes.get(node):
@@ -34,7 +35,8 @@ def set_node_type(graph: nx.MultiDiGraph, graph_config: dict):
                 ntype = res[0]
             else:
                 ntype = res[0]
-            graph.add_node(node, node_type=ntype)
+            # add also the label to the node, same as node id
+            graph.add_node(node, label = node, node_type=ntype)
 
 
 def set_node_levels_from_config(graph: nx.MultiDiGraph, graph_config: dict):
@@ -42,9 +44,9 @@ def set_node_levels_from_config(graph: nx.MultiDiGraph, graph_config: dict):
 
     Only used for graphs from the config file.
 
-    Nodes are expected to carry the a label node_type. this needs to correspond to one of
+    Nodes are expected to carry the a label node_type, which needs to correspond to one of
     the node_types in graph_config. The function sets the level of a node to the number
-    found in the configuration
+    found in the configuration.
     """
     for node in graph.nodes():
         node_attrs = graph.nodes.get(node)

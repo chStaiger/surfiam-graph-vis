@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Draw the plain sram graph."""
+"""Commandline tool to draw sram graphs to files and a webtool."""
 
 import argparse
 import json
@@ -162,15 +162,19 @@ def render_sram_graph():
 
     args = parser.parse_args()
 
+    # read in graph config file
     graph_config = _parse_config(args)
     if args.verbose:
         pprint.pprint(graph_config)
 
+    # read in sram organisation json or get information from sram server
     sram_dict = _parse_input_or_token(args)
     if sram_dict is None:
         sys.exit(1)
+    # some checks on the output file
     _parse_output(args)
 
+    # create the graph and render it
     nodes = get_nodes_from_dict(sram_dict)
     graph = nodes_to_graph(nodes)
     set_node_levels_from_config(graph, graph_config)
@@ -183,7 +187,7 @@ def list_config_graphs():
     """List all sections in the config file that define graphs."""
     parser = argparse.ArgumentParser(
         prog="surfiamviz list",
-        description="List the names of the graph sections from the configuration file.",
+        description="List the example names, e.g. from a file in example_graphs.",
     )
     parser.add_argument(
         "-i",
@@ -200,9 +204,9 @@ def list_config_graphs():
 
 
 def render_graph_from_config():
-    """Render a graph section from the configuration file."""
+    """Render an example graph."""
     parser = argparse.ArgumentParser(
-        prog="surfiamviz graph", description="Render a graph section from the configuration file."
+        prog="surfiamviz graph", description="Render a graph from the examples (example_graphs)."
     )
 
     parser.add_argument(
@@ -229,7 +233,7 @@ def render_graph_from_config():
     parser.add_argument(
         "-g",
         "--graph",
-        help="the name of the section in the config file which defines the edges of the graph.",
+        help="Name of the example graph.",
         type=str,
         required=True,
     )
@@ -267,14 +271,10 @@ def render_graph_from_config():
 
 def get_stats_from_json():
     """Get statistics of an SRAM organisation."""
-    parser = argparse.ArgumentParser(
-                            prog="surfiamviz stats",
-                            description="Retrieve statistics from SRAM json file."
-    )
+    parser = argparse.ArgumentParser(prog="surfiamviz stats",
+                                     description="Retrieve statistics from SRAM json file.")
 
-    json_data = parser.add_argument_group(
-                            title="Get statistics for an organisation."
-    )
+    json_data = parser.add_argument_group(title="Get statistics for an organisation.")
     json_data.add_argument(
         "-i",
         "--input",
@@ -305,10 +305,8 @@ def get_stats_from_json():
 
 def download_sram_org_json():
     """Save the sram organisation json."""
-    parser = argparse.ArgumentParser(
-                        prog="surfiamviz download",
-                        description="Download the SRAM organisation json."
-    )
+    parser = argparse.ArgumentParser(prog="surfiamviz download",
+                                     description="Download the SRAM organisation json.")
 
     parser.add_argument(
         "--server",
@@ -323,12 +321,10 @@ def download_sram_org_json():
         type=str,
         required=True,
     )
-    parser.add_argument(
-        "--file",
-        help="The path and filename to save the json file.",
-        type=Path,
-        required=True
-    )
+    parser.add_argument("--file",
+                        help="The path and filename to save the json file.",
+                        type=Path,
+                        required=True)
 
     args = parser.parse_args()
     if not args.file.parent.is_dir():
@@ -362,6 +358,7 @@ def _parse_config(args: argparse.Namespace) -> dict:
 
 
 def _parse_output(args: argparse.Namespace):
+    """Check the file name and path for the output html file."""
     if args.output.is_dir():
         print(f"Output {args.output} is a directory, cannot export graph.")
         sys.exit(234)
@@ -376,6 +373,7 @@ def _parse_output(args: argparse.Namespace):
 
 
 def _parse_input_or_token(args: argparse.Namespace) -> dict:
+    """Read in sram organisation json or connect to server, return dictionary."""
     if args.input and args.token:
         print("ERROR SRAM data: Please provide only an input file --input or")
         print("the information to fetch the organisation data from SRAM --server and --token.")
