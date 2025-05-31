@@ -67,8 +67,6 @@ def get_nodes_from_dict(sram_org_dict: dict) -> list:
          {"label": str, "created_by": str, "role": str, "create": list[str], "admin_of": list}
 
     """
-    print(sram_org_dict)
-    print("=========END=======")
     nodes: list[Any] = []
     org = {"node_name": sram_org_dict["name"]}
     org["label"] = sram_org_dict["short_name"]
