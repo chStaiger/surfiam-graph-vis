@@ -11,12 +11,7 @@ from surfiamviz.graph_from_config import (
     add_graph_edges_from_config,
     import_example_graph,
 )
-from surfiamviz.utils import (
-    color_edges,
-    infer_coll_app_edges,
-    read_graph_config,
-    subgraph
-)
+from surfiamviz.utils import color_edges, infer_coll_app_edges, read_graph_config, subgraph
 from surfiamviz.webutils.utils import _set_attributes, _write_graph_to_file
 
 repo_root = Path(os.path.realpath(__file__)).parent.parent.parent

@@ -121,6 +121,7 @@ def color_edges(graph: nx.MultiDiGraph, graph_config: dict):
 
 
 def infer_coll_app_edges(graph: nx.MultiDiGraph, verbose):
+    # pylint: disable=R1702
     """Infer the relationship between an app and a collaboration.
 
     Whether a collaboration can be connected to an application depends on the organisation
