@@ -10,12 +10,12 @@ import requests
 
 def get_sram_url(servername: str) -> str:
     """Return the url of the sram server."""
-    sram = "https://sram.surf.nl/"
+    prod = "https://sram.surf.nl/"
     acc = "https://acc.sram.surf.nl"
     test = "https://test.sram.surf.nl"
 
-    if servername.lower() == "sram":
-        return sram
+    if servername.lower() == "prod":
+        return prod
     if servername.lower() == "acc":
         return acc
     if servername.lower() == "test":
