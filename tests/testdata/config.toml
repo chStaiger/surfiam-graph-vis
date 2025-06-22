@@ -35,14 +35,14 @@ service = "blue"
 user = "purple"
 admin = "green"
 entity = "gray"
-default = "lightblue"
+no_type = "lightblue"
 
 [edge_colors]
 ACTIONS = "orange"
 TRUST = "purple"
 MEMBERS = "lightgray"
 BACKBONE = "black"
-default = "lightblue"
+NO_TYPE = "lightblue"
 
 [graph]
 

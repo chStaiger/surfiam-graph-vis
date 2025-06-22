@@ -92,11 +92,11 @@ def color_nodes(graph: nx.MultiDiGraph, graph_config: dict):
         The configuration file
 
     """
-    default_color = graph_config["node_colors"].get("default", "lightblue")
+    default_color = graph_config["node_colors"].get("no_type", "lightblue")
     for node in graph.nodes():
         node_attrs = graph.nodes.get(node)
         if "color_group" in node_attrs:
-            color_group = node_attrs.get("color_group", "default")
+            color_group = node_attrs.get("color_group", "no_type")
         elif "node_type" in node_attrs:
             if node_attrs["node_type"] in graph_config["node_types"]:
                 color_group = graph_config["node_types"][node_attrs["node_type"]].get("name", "default")
@@ -115,7 +115,7 @@ def color_edges(graph: nx.MultiDiGraph, graph_config: dict):
     correspond to the edges defined in the setiction edge_colors in the config file.
     """
     for edge in graph.edges:
-        etype = graph[edge[0]][edge[1]][edge[2]].get("edge_type", "default")
+        etype = graph[edge[0]][edge[1]][edge[2]].get("edge_type", "NO_TYPE")
         edge_color = graph_config["edge_colors"][etype]
         graph[edge[0]][edge[1]][edge[2]]["color"] = edge_color
 
