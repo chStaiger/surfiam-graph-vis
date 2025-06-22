@@ -152,8 +152,11 @@ def infer_coll_app_edges(graph: nx.MultiDiGraph, verbose):
         # a collaboration belongs to an org_admin if there exists a path which only contains
         # collaboration -> organisation -> orgadmin
         # collaboration -> unit -> organisation -> orgadmin
-        print(graph.get_edge_data(org_adm, app)[0]["label"])
+
+        # Org rejects first, app cannot reject or approve
         if graph.get_edge_data(org_adm, app)[0]["label"] == "denies":
+            if verbose:
+                print("Not Approved:", app, org_adm)
             graph.add_edge(coll, app, edge_type="REJECT", label="reject by org")
         else:
 
@@ -181,6 +184,7 @@ def infer_coll_app_edges(graph: nx.MultiDiGraph, verbose):
                             print("Approved:", app, org_adm)
                         graph.add_edge(coll, app, edge_type="BACKBONE")
                     else:
+                        # in case someone created a graph where org and app reject
                         if verbose:
                             print("Not Approved:", app, org_adm)
                         graph.add_edge(coll, app, edge_type="REJECT", label="reject by org")
