@@ -37,7 +37,7 @@ service = "blue"
 user = "purple"
 admin = "green"
 entity = "gray"
-default = "lightblue"
+no_type = "lightblue"
 
 [edge_colors]
 ACTIONS = "orange"
