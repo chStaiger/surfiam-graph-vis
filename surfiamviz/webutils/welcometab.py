@@ -16,12 +16,10 @@ def welcome():
                 This app aims to help you to understand SURF's IAM tools.
                 We offer:
 
-                - Some example graphs which show the different roles and concepts
-                  SRAM implements and it shows the complexity and effects of actions.
+                - Example graphs which show the different roles and concepts SRAM implements.
 
-                - To visualise explore your own SRAM graph for your organisation.
+                - To visually explore your own SRAM graph for your organisation..
 
-                - To create your own SRAM graph.
             """)
     with open(repo_root / "surfiamviz/webutils/all_nodes.html", "r", encoding="utf-8") as htmlfile:
-        components.html(htmlfile.read(), height=435)
+        components.html(htmlfile.read(), height=450)

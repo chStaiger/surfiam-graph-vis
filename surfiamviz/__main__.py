@@ -144,7 +144,7 @@ def render_sram_graph():
         title="Connect to SRAM server with server name and token and render graph."
     )
     sram_connection.add_argument(
-        "--server", help="The name of the SRAM ionstance: test, acc or sram (production)", type=str
+        "--server", help="The name of the SRAM ionstance: test, acc or prod", type=str
     )
     sram_connection.add_argument(
         "--token",
@@ -286,7 +286,7 @@ def get_stats_from_json():
         title="Connect to SRAM server with server name and token and get statistcs."
     )
     sram_connection.add_argument(
-        "--server", help="The name of the SRAM ionstance: test, acc or sram (production)", type=str
+        "--server", help="The name of the SRAM ionstance: test, acc or prod", type=str
     )
     sram_connection.add_argument(
         "--token",
@@ -310,7 +310,7 @@ def download_sram_org_json():
 
     parser.add_argument(
         "--server",
-        help="The name of the SRAM ionstance: test, acc or sram (production)",
+        help="The name of the SRAM ionstance: test, acc or prod",
         type=str,
         required=True,
     )
@@ -397,7 +397,7 @@ def _parse_input_or_token(args: argparse.Namespace) -> dict:
 
     if args.token:
         if not args.server:
-            print("ERROR SRAM server: no server name given (test, acc or sram).")
+            print("ERROR SRAM server: no server name given (test, acc or prod).")
             return None
         server = get_sram_url(args.server)
         if server:
@@ -408,6 +408,6 @@ def _parse_input_or_token(args: argparse.Namespace) -> dict:
                 print(repr(err))
                 return None
         else:
-            print(f"Server {args.server} not known. Please choose from test, acc or sram.")
+            print(f"Server {args.server} not known. Please choose from test, acc or prod.")
             return None
     return None

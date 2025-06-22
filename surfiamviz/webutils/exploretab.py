@@ -31,7 +31,7 @@ def _input():
     sram_form.markdown("#### 2a) Provide the API token for your Organisation and choose the SRAM instance.")
     col1, col2 = sram_form.columns([2, 2])
     api_key = col1.text_input("SRAM API key", type="password")
-    sram_instance = col2.selectbox("SRAM instance", ("acc", "sram", "test"))
+    sram_instance = col2.selectbox("SRAM instance", ("acc", "prod", "test"))
     download = sram_form.checkbox("Download json file", value=False)
     sram_form.markdown("#### 2b) Or provide an exported SRAM file (json):")
     upload_sram_org = sram_form.file_uploader("SRAM organisation json", type=["json"])

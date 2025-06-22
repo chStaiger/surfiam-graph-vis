@@ -1,44 +1,3 @@
-[app_graph_org_accepts]
-entities.edges = [["ORGANISATION", "COLLABORATION_1"],
-                  ["ORGANISATION", "UNIT"],
-                  ["UNIT", "COLLABORATION_2"]
-                  ]
-entities.type = "BACKBONE"
-
-entity_role.edges = [["ORGANISATION", "ORG_ADMIN"],
-                     ["COLLABORATION_1", "COLL_ADMIN_1"],
-                     ["COLLABORATION_2", "COLL_ADMIN_2"],
-                     ["APPLICATION", "APP_ADMIN"]
-                     ]
-entity_role.type = "BACKBONE"
-
-actions.edges = [["ORG_ADMIN", "APPLICATION", "approves"],
-                 ["APP_ADMIN", "COLLABORATION_2", "approves"],
-                 ["APP_ADMIN", "COLLABORATION_1", "disapproves"]
-                ]
-actions.type = "ACTIONS"
-explanation = "The organisation admin approves an application to be used by all collaborations. If the application admin also accpets that a collaboration uses the app, all members of the collaboration have access to the application."
-
-
-[app_graph_org_denies]
-entities.edges = [
-                  ["ORGANISATION", "COLLABORATION"],
-                  ]
-entities.type = "BACKBONE"
-
-entity_role.edges = [["ORGANISATION", "ORG_ADMIN"],
-                     ["COLLABORATION", "COLL_ADMIN"],
-                     ["APPLICATION", "APP_ADMIN"]
-                     ]
-entity_role.type = "BACKBONE"
-
-actions.edges = [["ORG_ADMIN", "APPLICATION", "disapproves"],
-                 ["APP_ADMIN", "COLLABORATION", "approves"],
-                ]
-actions.type = "ACTIONS"
-explanation = "The organisation admin does not approve an application to be used by any collaboration. Even if the application admin accpets that a collaboration uses the app, none of the members of the collaboration have access to the application."
-
-
 [all_nodes_graph]
 
 entities.edges = [["ORGANISATION", "UNIT"],
@@ -117,4 +76,81 @@ actions.edges = [["ORG_MANAGER", "COLLABORATION", "create"],
                 ]
 actions.type = "ACTIONS"
 
-explanation = "An easy understandable graph showing the most important concepts."
+explanation = "A simpler graph that shows the most fundamental node types and edge types.."
+
+[app_graph_org_accepts]
+entities.edges = [["ORGANISATION", "COLLABORATION_1"],
+                  ["ORGANISATION", "UNIT"],
+                  ["UNIT", "COLLABORATION_2"]
+                  ]
+entities.type = "BACKBONE"
+
+entity_role.edges = [["ORGANISATION", "ORG_ADMIN"],
+                     ["COLLABORATION_1", "COLL_ADMIN_1"],
+                     ["COLLABORATION_2", "COLL_ADMIN_2"],
+                     ["APPLICATION", "APP_ADMIN"]
+                     ]
+entity_role.type = "BACKBONE"
+
+actions.edges = [["ORG_ADMIN", "APPLICATION", "approves"],
+                 ["APP_ADMIN", "COLLABORATION_2", "approves"],
+                 ["APP_ADMIN", "COLLABORATION_1", "denies"]
+                ]
+actions.type = "ACTIONS"
+explanation = """
+This example graph shows the impact of actions when an Oragnisation enabled *Application connection request must be approved by the Organisation admin or manager* and an Application enabled the setting *I want to approve (connection) requests manually*.
+
+Below we list the general workflow:
+
+1. **Collaboration admin** creates an *Application Connection Request* to connect an Application to a collaboration.
+2. The **Organisation admin / manager** reviews the *Application Connection Request* for an **Application** to a **Collaboration**.
+4. The **Organisation admin/ manager** approves the *Application Connection Request*.
+6. The **Application admin/manager** reviews the *Application Connection Request* for the given **Collaboration**.
+7. The **Application admin/manager** approves (or disapproves).
+8. The **Application** is only connected to a **Collaboration** with both, the Organisation and the Application Admins reviews and approvals.
+
+In the graph above we show:
+
+- Collaboration 1 and Collaboration 2 wish to make an application available for their members.
+The Organisation has optionally decided to manually review all application connection requests.
+- The two CO admins create each an *Application Connection Request* and the Organisation admin approves the submitted *Application Connection Requests*.
+ Since the Organisation admin approved the requests, they continue to the Application admin/manager.
+- The Application admin denies the request for Collaboration 1, and approves the request for Collaboration 2. All members of Collaboration 2 now have access to the Application.
+
+"""
+
+[app_graph_org_denies]
+entities.edges = [
+                  ["ORGANISATION", "COLLABORATION"],
+                  ]
+entities.type = "BACKBONE"
+
+entity_role.edges = [["ORGANISATION", "ORG_ADMIN"],
+                     ["COLLABORATION", "COLL_ADMIN"],
+                     ["APPLICATION", "APP_ADMIN"]
+                     ]
+entity_role.type = "BACKBONE"
+
+actions.edges = [["ORG_ADMIN", "APPLICATION", "denies"],
+                ]
+actions.type = "ACTIONS"
+explanation = """
+This example graph shows the impact of actions when an Oragnisation enabled *Application connection request must be approved by the Organisation admin or manager* and an Application enabled the setting *I want to approve (connection) requests manually*.
+
+Below we list the general workflow:
+
+1. **Collaboration admin** creates an *Application Connection Request* to connect an Application to a collaboration.
+2. The **Organisation admin / manager** reviews the *Application Connection Request* for an **Application** to a **Collaboration**.
+4. The **Organisation admin/ manager** approves the *Application Connection Request*.
+6. The **Application admin/manager** reviews the *Application Connection Request* for the given **Collaboration**.
+7. The **Application admin/manager** approves (or disapproves).
+8. The **Application** is only connected to a **Collaboration** with both, the Organisation and the Application Admins reviews and approvals.
+
+In the graph above we show:
+
+- A Collaboration wishes to make an application available for its members.
+- The Collaboration admin makes an Application Connection Request.
+- The Organisation admin/manager denies the application connection request. Since the Organisation admin denied the request, the Application admin/manager does not receive the request.
+- Members of the collaboration do not have access.
+ 
+"""

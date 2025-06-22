@@ -121,6 +121,7 @@ def color_edges(graph: nx.MultiDiGraph, graph_config: dict):
 
 
 def infer_coll_app_edges(graph: nx.MultiDiGraph, verbose):
+    # pylint: disable=R1702
     """Infer the relationship between an app and a collaboration.
 
     Whether a collaboration can be connected to an application depends on the organisation
@@ -152,37 +153,46 @@ def infer_coll_app_edges(graph: nx.MultiDiGraph, verbose):
         # a collaboration belongs to an org_admin if there exists a path which only contains
         # collaboration -> organisation -> orgadmin
         # collaboration -> unit -> organisation -> orgadmin
-        paths = [
-            sorted(["COLLABORATION", "ORGANISATION", "ORG_ADMIN"]),
-            sorted(["COLLABORATION", "ORGANISATION", "ORG_ADMIN", "UNIT"]),
-        ]
 
-        all_paths = nx.all_simple_paths(graph.to_undirected(), coll, org_adm)
-        valid_paths = []
-        for path in all_paths:
-            node_types = [graph.nodes.get(n)["node_type"] for n in path]
-            if sorted(node_types) in paths:
-                valid_paths.append(path)
-        if verbose:
-            print(coll, org_adm, app, app_adm, "valid paths: ", valid_paths)
-        if len(valid_paths) > 0:
-            # we choose >0 since there might also be trust and other action edges
-            # which results in multiple paths, we are also working with multigraphs here.
-            if (coll, app_adm, app) in approved_by_app:
-                if verbose:
-                    print("Approved:", coll, app_adm, app)
-                if (app, org_adm) in approved_by_org:
+        # Org rejects first, app cannot reject or approve
+        if graph.get_edge_data(org_adm, app)[0]["label"] == "denies":
+            if verbose:
+                print("Not Approved:", app, org_adm)
+            graph.add_edge(coll, app, edge_type="REJECT", label="reject by org")
+        else:
+
+            paths = [
+                sorted(["COLLABORATION", "ORGANISATION", "ORG_ADMIN"]),
+                sorted(["COLLABORATION", "ORGANISATION", "ORG_ADMIN", "UNIT"]),
+            ]
+
+            all_paths = nx.all_simple_paths(graph.to_undirected(), coll, org_adm)
+            valid_paths = []
+            for path in all_paths:
+                node_types = [graph.nodes.get(n)["node_type"] for n in path]
+                if sorted(node_types) in paths:
+                    valid_paths.append(path)
+            if verbose:
+                print(coll, org_adm, app, app_adm, "valid paths: ", valid_paths)
+            if len(valid_paths) > 0:
+                # we choose >0 since there might also be trust and other action edges
+                # which results in multiple paths, we are also working with multigraphs here.
+                if (coll, app_adm, app) in approved_by_app:
                     if verbose:
-                        print("Approved:", app, org_adm)
-                    graph.add_edge(coll, app, edge_type="BACKBONE")
+                        print("Approved:", coll, app_adm, app)
+                    if (app, org_adm) in approved_by_org:
+                        if verbose:
+                            print("Approved:", app, org_adm)
+                        graph.add_edge(coll, app, edge_type="BACKBONE")
+                    else:
+                        # in case someone created a graph where org and app reject
+                        if verbose:
+                            print("Not Approved:", app, org_adm)
+                        graph.add_edge(coll, app, edge_type="REJECT", label="reject by org")
                 else:
                     if verbose:
-                        print("Not Approved:", app, org_adm)
-                    graph.add_edge(coll, app, edge_type="REJECT", label="reject by org")
-            else:
-                if verbose:
-                    print("Not Approved:", coll, app_adm, app)
-                graph.add_edge(coll, app, edge_type="REJECT", label="reject by app")
+                        print("Not Approved:", coll, app_adm, app)
+                    graph.add_edge(coll, app, edge_type="REJECT", label="reject by app")
         if verbose:
             print("------")
 
