@@ -32,7 +32,11 @@ def _input():
     col1, col2 = sram_form.columns([2, 2])
     api_key = col1.text_input("SRAM API key", type="password")
     sram_instance = col2.selectbox("SRAM instance", ("acc", "prod", "test"))
-    download = sram_form.checkbox("Download json file", value=False)
+    download = sram_form.checkbox("Download json file.", value=False)
+    sram_form.markdown("""
+                        ⚠️  This will save the file in your Downloads folder.
+                         If production data, consider deleting after use.
+                        """)
     sram_form.markdown("#### 2b) Or provide an exported SRAM file (json):")
     upload_sram_org = sram_form.file_uploader("SRAM organisation json", type=["json"])
     sram_form.markdown("#### 3) Choose the layout of the network:")
