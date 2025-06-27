@@ -18,7 +18,7 @@ def welcome():
 
                 - Example graphs which show the different roles and concepts SRAM implements.
 
-                - To visually explore your own SRAM graph for your organisation..
+                - To visually explore your own SRAM graph for your organisation.
 
             """)
     with open(repo_root / "surfiamviz/webutils/all_nodes.html", "r", encoding="utf-8") as htmlfile:
